@@ -1,18 +1,19 @@
 <template>
     <div>
-        <addCustomerBtn @AddCustomer="AddCustomer"></addCustomerBtn>
-        <div class="customer-view" v-for="(customer, index) in customers" :key="index">
-            <customerUnit :initTitle=customer.title :id=customer.id @Update="UpdateCustomer" @Delete="DeleteCustomer" @Select="SelectCustomer"></customerUnit>
+        <div class="create-btn" @click="CreateBtn">New Customer</div>
+        <div class="list">
+            <list-element v-for="item in this.customers" :key="item.id" 
+            @ShowModal="ShowModal" @Delete="Delete" @Select="Select" :id="item.id" :title="item.title" :note="item.note" :isOption="true"/>
         </div>
+        
+        <modal v-if="showModal" :data="modalData" @Create="Create" @Update="Update" @HideModal="HideModal"/> 
     </div>
 </template>
 
 <script>
-import addCustomerBtn from "./AddCutomerBtn.vue"
-import customerUnit from './CustomerUnit.vue'
 import axios from 'axios'
-
-var customerList = [];
+import listElement from "./ListElement.vue";
+import modal from "./Modal.vue";
 
 export default {
     props:{
@@ -20,92 +21,110 @@ export default {
     },
     data(){
         return{
-            customers: customerList
+            customers: [],
+            showModal: false,
+            modalData: []
         }
     },
     created(){
-        this.GetCustomers()
-        console.log(customerList);
+        this.GetList()
     },
     methods: {
-        SelectCustomer(id){
+        Select(id){
             console.log("cusView " + id);
             this.$emit('SelectCustomer', id);
         },
-        AddCustomer(data){            
+        Create(data){   
+            this.HideModal();         
             var temp ={
                 title: data.title
                 }
 
             axios.post('http://localhost:80/addcustomer', temp)
-            .then(function(res){
+            .then(res => {
                 console.log("add " + res.data.data);
                 temp.id = res.data.data;
-                customerList.push(temp)
-            }).catch(function(err){
+                this.customers.push(temp)
+            }).catch(err => {
                 console.log(err)
             })
             console.log(temp)
         },
-
-        UpdateCustomer(data){
+        Update(data){
+            this.HideModal();
+            console.log("update");
+            console.log(data);
             axios.post('http://localhost:80/updatecustomer', data)
-            .then(function(res){
+            .then(res => {
                 console.log(res);
                 if(res.data.result == "success"){
-                    customerList.forEach(function(project, index){
-                        if(customerList[index].id == data.id){
-                            customerList[index].title = data.title;
+                    this.customers.forEach((project, index) => {
+                        if(this.customers[index].id == data.id){
+                            this.customers.splice(index, 1, data);
                             return;
                         }
                     });
                 }
-            }).catch(function(err){
+            }).catch(err => {
                 console.log(err);
             })
         },
-        DeleteCustomer(id){
+        Delete(id){
             console.log("del " + id);
             axios.post('http://localhost:80/deletecustomer', {id : id})
-            .then(function(res){
+            .then(res => {
                 console.log(res);
                 if(res.data.result == "success"){
-                    customerList.forEach(function(project, index){
+                    this.customers.forEach((project, index) => {
                         console.log(index);
-                        if(customerList[index].id == id){
+                        if(this.customers[index].id == id){
                             console.log(index);
-                            console.log(customerList[index].id);
-                            customerList.splice(index, 1);
+                            console.log(this.customers[index].id);
+                            this.customers.splice(index, 1);
                             return;
                         }
                     });
                 }
-            }).catch(function(err){
+            }).catch(err => {
                 console.log(err);
             })
         },
-        GetCustomers(event, data){
+        GetList(){
             axios.get('http://localhost:80/getcustomers')
-            .then(function (res) {
+            .then(res => {
                 console.log(res);
                 for(var i=0; i<res.data.data.length; i++){
-                    customerList.push(res.data.data[i])
+                    this.customers.push(res.data.data[i])
                 }
-            }).catch(function(err){
+            }).catch(err => {
                 console.log(err)
             })
+        },
+        HideModal(){
+            console.log("hide")
+            this.showModal = false;
+        },
+        ShowModal(data){
+            console.log(data);
+            this.modalData = data;
+            this.showModal = true;
+            console.log(this.showModal);
+        },
+        CreateBtn(){
+            console.log("createbtn");
+            this.ShowModal({mode: 'create'});
         }
-
     },
     components:{
-        addCustomerBtn,
-        customerUnit
+        listElement,
+        modal
     }
 }
 </script>
 
-<style lang="scss">
-    .customer-view{
-        float: left;
+<style lang="scss" scoped>
+    .list{
+        display: flex;
+        flex-direction: row;
     }
 </style>

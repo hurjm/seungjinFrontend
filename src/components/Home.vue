@@ -6,18 +6,19 @@
             <projectView v-if="screen==1" @SelectProject='SelectProject' :customerID=customerID></projectView>
             <recipeView v-if="screen==2" :projectID=projectID></recipeView>
             <subMaterialsView v-if="screen==3" :projectID=projectID></subMaterialsView>
+            <productionView v-if="screen==4" :projectID=projectID></productionView>
         </div>
     </div>
 </template>
 
 <script>
 import Vue from 'vue';
-import addproject from "./Addproject.vue";
 import sidebar from './Sidebar.vue';
 import projectView from './ProjectView.vue';
 import recipeView from "./RecipeView.vue";
 import customerView from "./CustomerView.vue";
 import subMaterialsView from "./SubMaterialsView.vue";
+import productionView from "./ProductionView.vue";
 
 export default {
     name: 'Home',
@@ -48,7 +49,8 @@ export default {
         projectView,
         recipeView,
         customerView,
-        subMaterialsView
+        subMaterialsView,
+        productionView
     }
 }
 </script>
@@ -70,24 +72,24 @@ export default {
         left: 220px;
     }
 
-    .sidebar{
-        display: flex;
-        position:fixed;
-        top: 0;
-        min-width: 200px;
-        min-height: 100%;
-        margin-right: 10px;
-        align-items: center;
-        padding-top: 50px;
-        flex-direction: column;
-        background-color: #F7F6F3;
-        font-size: 30px;
-        font-weight: 700;
-        overflow: hidden;
+    // .sidebar{
+    //     display: flex;
+    //     position:fixed;
+    //     top: 0;
+    //     min-width: 200px;
+    //     min-height: 100%;
+    //     margin-right: 10px;
+    //     align-items: center;
+    //     padding-top: 50px;
+    //     flex-direction: column;
+    //     background-color: #F7F6F3;
+    //     font-size: 30px;
+    //     font-weight: 700;
+    //     overflow: hidden;
 
-        div{
-            margin: 5px;
-        }
+    //     div{
+    //         margin: 5px;
+    //     }
 
-    }
+    // }
 </style>

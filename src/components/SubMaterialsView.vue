@@ -1,44 +1,50 @@
 <template>
     <div>
-        <imageUploader :projectID=projectID />
-        <addMaterials @send-data="Create"></addMaterials>
+        <imageUploader class="timeline" :projectID=projectID />
+        
+        <div class="create-btn" @click="CreateBtn">New SubMaterial</div>
         <div class="submat-container">
             <div class="suggested">
                 제안
-                <draggable v-model="suggested" group="people" @start="drag=true" @end="drag=false">
-                            <div class="recipe-list" v-for="recipe in suggested" :key="recipe.id">
-                                <recipe-element :id=recipe.id :initTitle=recipe.title :initNote=recipe.note @update="Update" @delete="Delete"></recipe-element>
-                            </div>
-                </draggable>   
+                <div class="list">
+                    <draggable class="drag-area" v-model="suggested" group="people" @start="drag=true" @end="drag=false">
+                        <list-element v-for="item in suggested" :key="item.id" 
+                        @ShowModal="ShowModal" @Delete="Delete" :id="item.id" :title="item.title" :note="item.note" :isOption="true"/>
+                    </draggable>   
+                </div>
             </div>
             <div class="progress">
                 개발
-                <draggable v-model="progress" group="people" @start="drag=true" @end="drag=false">   
-                            <div class="recipe-list" v-for="recipe in progress" :key="recipe.id">
-                                <recipe-element :id=recipe.id :initTitle=recipe.title :initNote=recipe.note @update="Update" @delete="Delete"></recipe-element>
-                            </div>
-                </draggable>
+                <div class="list">
+                    <draggable class="drag-area" v-model="progress" group="people" @start="drag=true" @end="drag=false">   
+                                <list-element v-for="item in progress" :key="item.id" 
+                                @ShowModal="ShowModal" @Delete="Delete" :id="item.id" :title="item.title" :note="item.note" :isOption="true"/>
+                    </draggable>
+                </div>
             </div>
             <div class="completed">
                 최종
-                <draggable v-model="completed" group="people" @start="drag=true" @end="drag=false">
-                            <div class="recipe-list" v-for="recipe in completed" :key="recipe.id">
-                                <recipe-element :id=recipe.id :initTitle=recipe.title :initNote=recipe.note @update="Update" @delete="Delete"></recipe-element>
-                            </div>
-                </draggable>
+                <div class="list">
+                    <draggable class="drag-area" v-model="completed" group="people" @start="drag=true" @end="drag=false">
+                                <list-element v-for="item in completed" :key="item.id" 
+                                @ShowModal="ShowModal" @Delete="Delete" :id="item.id" :title="item.title" :note="item.note" :isOption="true"/>
+                    </draggable>
+                </div>
             </div> 
             <fileUploader class="file-uploader" :projectID=projectID />   
+
+            <modal v-if="showModal" :data="modalData" @Create="Create" @Update="Update" @HideModal="HideModal"/>
         </div>
     </div>           
 </template>
 
 <script>
-import addMaterials from "./AddMaterials.vue"
+import axios from 'axios'
+import listElement from "./ListElement.vue";
+import modal from "./Modal.vue";
+import draggable from 'vuedraggable';
 import imageUploader from "./ImageUploader.vue"
 import fileUploader from "./FileUploader.vue"
-import recipeElement from './RecipeElement.vue'
-import draggable from 'vuedraggable';
-import axios from 'axios'
 
 export default {
     props:{
@@ -48,28 +54,92 @@ export default {
         return{
             suggested: [],
             progress: [],
-            completed: []
+            completed: [],
+            showModal: false,
+            modalData: []
         }
     },
     mounted(){
-        this.GetData();
+        this.GetList();
         console.log('mounted');
         console.log(this.projectID);
         console.log(this.$test);
     },
+    watch:{
+        suggested:function(){
+            console.log('suggested');
+            console.log(this.suggested);
+            let list = [];
+            this.suggested.forEach(data => {
+                if(data.state != 0){
+                    data.state = 0;
+                    list.push(data);
+                }
+            });
+
+            if(list.length > 0){
+                axios.post('http://localhost:80/updatesubmaterialstate', {state: 0, data: list})
+                .then(res => {
+                    console.log(res);
+                }).catch(err => {
+                    console.log(err);
+                })
+            }
+        },
+        progress:function(){
+            console.log('progress');
+            console.log(this.progress);
+            let list = [];
+            this.progress.forEach(data => {
+                if(data.state != 1){
+                    data.state = 0;
+                    list.push(data);
+                }
+            });
+
+            if(list.length > 0){
+                axios.post('http://localhost:80/updatesubmaterialstate', {state: 1, data: list})
+                .then(res => {
+                    console.log(res);
+                }).catch(err => {
+                    console.log(err);
+                })
+            }
+        },
+        completed:function(){
+            console.log('completed');
+            console.log(this.completed);
+            let list = [];
+            this.completed.forEach(data => {
+                if(data.state != 2){
+                    data.state = 0;
+                    list.push(data);
+                }
+            });
+
+            if(list.length > 0){
+                axios.post('http://localhost:80/updatesubmaterialstate', {state: 2, data: list})
+                .then(res => {
+                    console.log(res);
+                }).catch(err => {
+                    console.log(err);
+                })
+            }
+        }
+    },
     methods:{
         Create(data){
+            this.HideModal()
             var temp ={
                 title: data.title, 
                 note: data.note,
                 project_id: this.projectID,
-                timeline: null,
                 state: 0, 
                 startdate: Date.now(),
                 enddate: null
                 }
                 console.log("create");
-            axios.post('http://localhost:80/addrecipe', temp)
+            axios.post('http://localhost:80/addsubmaterial', temp)
             .then((res) => {
                 console.log(res);
                 if(res.data.result == 'success'){
@@ -82,7 +152,8 @@ export default {
             })
         },
         Update(data){
-            axios.post('http://localhost:80/updaterecipe', data)
+            this.HideModal()
+            axios.post('http://localhost:80/updatesubmaterial', data)
             .then((res) => {
                 console.log(res);
                 if(res.data.result == "success"){
@@ -114,7 +185,7 @@ export default {
         },
         Delete(id){
             console.log("delete");
-            axios.post('http://localhost:80/deleterecipe', {id : id})
+            axios.post('http://localhost:80/deletesubmaterial', {id : id})
             .then((res) => {
                 console.log(res);
                 if(res.data.result == "success"){
@@ -141,8 +212,8 @@ export default {
                 console.log(err);
             })
         },
-        GetData(){
-            axios.post('http://localhost:80/getrecipes', {id : this.projectID})
+        GetList(){
+            axios.post('http://localhost:80/getsubmaterials', {id : this.projectID})
             .then((res) => {
                 console.log(res)
                 for(var i=0; i<res.data.data.length; i++){
@@ -160,36 +231,35 @@ export default {
             }).catch((err) => {
                 console.log(err)
             })
+        },
+        HideModal(){
+            console.log("hide")
+            this.showModal = false;
+        },
+        ShowModal(data){
+            console.log(data);
+            this.modalData = data;
+            this.showModal = true;
+        },
+        CreateBtn(){
+            console.log("createbtn");
+            this.ShowModal({note: "", mode: 'create'});
         }
     },
     components:{
         imageUploader,
         fileUploader,
-        addMaterials,
-        recipeElement,
+        listElement,
+        modal,
         draggable
     }
 }
 </script>
-
 <style lang="scss" scoped>
     .submat-container{
         display: flex;
         flex-direction: row;
         justify-content: space-around;
-        
-        // .item:nth-child(1){
-        //     flex-grow: 1;
-        // }
-        // .item:nth-child(2){
-        //     flex-grow: 1;
-        // }
-        // .item:nth-child(3){
-        //     flex-grow: 1;
-        // }
-        // .item:nth-child(4){
-        //     flex-grow: 1;
-        // }
     }
 
     .suggested,
@@ -203,7 +273,11 @@ export default {
         margin: 5px;
     }
 
-    .file-uploader{
+    .drag-area{
+        min-height: 500px;
+    }
+
+    .timeline{
     }
 
 </style>

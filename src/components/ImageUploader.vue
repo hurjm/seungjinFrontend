@@ -59,14 +59,14 @@ export default {
                 console.log(err);
             });
         }
-        else if(this.customerID != null){
-            axios.post('http://localhost:80/getcustomerphoto', {id: this.customerID})
-            .then(res => {
-                this.images.push(res.data.data);
-            }).catch(err => {
-                console.log(err);
-            });
-        }
+        // else if(this.customerID != null){
+        //     axios.post('http://localhost:80/getcustomerphoto', {id: this.customerID})
+        //     .then(res => {
+        //         this.images.push(res.data.data);
+        //     }).catch(err => {
+        //         console.log(err);
+        //     });
+        // }
     },
     methods:{
         OnDragEnter(e){
@@ -169,7 +169,6 @@ export default {
 <style lang="scss" scoped>
     .image-uploader{
         width: 80%;
-        // background: #2196F3;
         color: #fff;
         padding: 40px 15px;
         text-align: center;
@@ -177,6 +176,7 @@ export default {
         border: 3px dashed #fff;
         font-size: 20px;
         position: relative;
+
 
         &.dragging{
             background: #fff;

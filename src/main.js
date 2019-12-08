@@ -4,12 +4,13 @@ import router from './router'
 import axios from 'axios' 
 import VModal from 'vue-js-modal'
 
-Vue.use(VModal)
-Vue.prototype.$http = axios
+Vue.use(VModal, { dynamic: true, dynamicDefaults: { clickToClose: false }});
 
-Vue.config.productionTip = false
+Vue.prototype.$http = axios;
 
-Vue.prototype.$screen = 0
+Vue.config.productionTip = false;
+
+Vue.prototype.$screen = 0;
 window.screen = 0;
 window.customerID = null;
 window.projectID = null;

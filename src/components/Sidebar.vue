@@ -59,27 +59,28 @@ export default {
 }
 </script>
 
-<style lang="scss">
-    // .sidebar-container{
-    //     display: flex;
-    //     position: absolute;
-    //     top: 0;
-    //     left: 0;
-    //     bottom: 0;
-    //     min-width: 200px;
-    //     min-height: 100%;
-    //     margin-right: 10px;
-    //     align-items: center;
-    //     padding-top: 50px;
-    //     flex-direction: column;
-    //     background-color: #F7F6F3;
-    //     font-size: 30px;
-    //     font-weight: 700;
-    //     overflow: hidden;
+<style lang="scss" scoped>
+    .sidebar-container{
+        display: flex;
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        min-width: 200px;
+        min-height: 100%;
+        margin-right: 10px;
+        align-items: center;
+        padding-top: 50px;
+        flex-direction: column;
+        background-color: #F7F6F3;
+        font-size: 30px;
+        font-weight: 700;
+        overflow: hidden;
 
-    //     div{
-    //         margin: 5px;
-    //     }
+        div{
+            margin: 5px;
+        }
+    }
 
     // }
     // .bm-menu{

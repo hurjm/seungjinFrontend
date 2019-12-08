@@ -1,45 +1,49 @@
 <template>
     <div>
-        <imageUploader :projectID=projectID></imageUploader>
+        <imageUploader class="timeline1" :projectID=projectID></imageUploader>
 
-        <addrecipe @send-data="Create"></addrecipe>
+        <div class="create-btn" @click="CreateBtn">New Recipe</div>
         <main class="state-container">
             <div class="suggested">
                 제안
-                <draggable v-model="suggested" group="people" @start="drag=true" @end="drag=false">
-                            <div class="recipe-list" v-for="recipe in suggested" :key="recipe.id">
-                                <recipe-element :id=recipe.id :initTitle=recipe.title :initNote=recipe.note @update="Update" @delete="Delete"></recipe-element>
-                            </div>
-                </draggable>   
+                <div class="list">
+                    <draggable v-model="suggested" group="people" @start="drag=true" @end="drag=false">   
+                            <list-element v-for="item in suggested" :key="item.id" 
+                            @ShowModal="ShowModal" @Delete="Delete" :id="item.id" :title="item.title" :note="item.note" :isOption="true"/>
+                    </draggable>   
+                 </div>
             </div>
             <div class="progress">
                 개발
-                <draggable v-model="progress" group="people" @start="drag=true" @end="drag=false">   
-                            <div class="recipe-list" v-for="recipe in progress" :key="recipe.id">
-                                <recipe-element :id=recipe.id :initTitle=recipe.title :initNote=recipe.note @update="Update" @delete="Delete"></recipe-element>
-                            </div>
-                </draggable>
+                <div class="list">
+                    <draggable v-model="progress" group="people" @start="drag=true" @end="drag=false">   
+                            <list-element v-for="item in progress" :key="item.id" 
+                            @ShowModal="ShowModal" @Delete="Delete" :id="item.id" :title="item.title" :note="item.note" :isOption="true"/>
+                    </draggable>
+                </div>
             </div>
             <div class="completed">
                 최종
-                <draggable v-model="completed" group="people" @start="drag=true" @end="drag=false">
-                            <div class="recipe-list" v-for="recipe in completed" :key="recipe.id">
-                                <recipe-element :id=recipe.id :initTitle=recipe.title :initNote=recipe.note @update="Update" @delete="Delete"></recipe-element>
-                            </div>
-                </draggable>
+                  <div class="list">
+                    <draggable v-model="completed" group="people" @start="drag=true" @end="drag=false">
+                            <list-element v-for="item in completed" :key="item.id" 
+                            @ShowModal="ShowModal" @Delete="Delete" :id="item.id" :title="item.title" :note="item.note" :isOption="true"/>
+                    </draggable>
+                </div>
             </div>
         </main>
+        
+        <modal v-if="showModal" :data="modalData" @Create="Create" @Update="Update" @HideModal="HideModal"/>
     </div>           
 </template>
 
 <script>
-import addrecipe from "./AddRecipe.vue"
-import imageUploader from "./ImageUploader.vue"
-import recipeElement from './RecipeElement.vue'
-import draggable from 'vuedraggable';
 import axios from 'axios'
-import Board from './Board.vue';
-import Card from './Card.vue';
+import listElement from "./ListElement.vue";
+import modal from "./Modal.vue";
+
+import imageUploader from "./ImageUploader.vue"
+import draggable from 'vuedraggable';
 
 
 export default {
@@ -50,7 +54,9 @@ export default {
         return{
             suggested: [],
             progress: [],
-            completed: []
+            completed: [],
+            showModal: false,
+            modalData: []
         }
     },
     mounted(){
@@ -123,6 +129,7 @@ export default {
 
         },
         Create(data){
+            this.HideModal();
             var temp ={
                 title: data.title, 
                 note: data.note,
@@ -146,6 +153,7 @@ export default {
             })
         },
         Update(data){
+            this.HideModal();
             axios.post('http://localhost:80/updaterecipe', data)
             .then((res) => {
                 console.log(res);
@@ -224,13 +232,26 @@ export default {
             }).catch((err) => {
                 console.log(err)
             })
+        },
+        HideModal(){
+            console.log("hide")
+            this.showModal = false;
+        },
+        ShowModal(data){
+            console.log(data);
+            this.modalData = data;
+            this.showModal = true;
+        },
+        CreateBtn(){
+            console.log("createbtn");
+            this.ShowModal({note: "", mode: 'create'});
         }
     },
     components:{
         imageUploader,
-        addrecipe,
-        recipeElement,
-        draggable
+        draggable,
+        listElement,
+        modal
     }
 }
 </script>
@@ -248,4 +269,6 @@ export default {
         margin: 5px;
     }
 
+    .timeline1{
+    }
 </style>
