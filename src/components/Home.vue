@@ -2,7 +2,7 @@
     <div class="home-container">
         <sidebar class="sidebar" :screenNum="screen" @SelectScreen="SelectScreen"></sidebar>
         <div class="page-wrap">
-            <customerView v-show="screen==0" @SelectCustomer='SelectCustomer'></customerView>
+            <customerView v-if="screen==0" @SelectCustomer='SelectCustomer'></customerView>
             <projectView v-if="screen==1" @SelectProject='SelectProject' :customerID=customerID></projectView>
             <recipeView v-if="screen==2" :projectID=projectID></recipeView>
             <subMaterialsView v-if="screen==3" :projectID=projectID></subMaterialsView>
@@ -61,15 +61,17 @@ export default {
     }   
 
     .home-container{
-        // display: flex;
-        // flex-direction: row;
+        display: flex;
+        flex-direction: row;
         // justify-content: flex-start;
         // height: 100%;
     }
 
     .page-wrap{
-        position: absolute;
-        left: 220px;
+        // position: absolute;
+        // left: 220px;
+        width: 75%;
+        margin-bottom: 40px;
     }
 
     // .sidebar{

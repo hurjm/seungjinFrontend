@@ -2,10 +2,10 @@
     <div>
         <div class="create-btn" @click="CreateBtn">New Project</div>
         <div class="list">
-            <list-element v-for="item in projects" :key="item.id" 
+            <list-element class="list-element" v-for="item in projects" :key="item.id" 
             @ShowModal="ShowModal" @Delete="Delete" @Select="Select" :id="item.id" :title="item.title" :isOption="true"/>
         </div>
-        <modal v-if="showModal" :data="modalData" @Create="Create" @Update="Update" @HideModal="HideModal"/> 
+        <modal v-if="showModal" :width="250" :height="125" :data="modalData" @Create="Create" @Update="Update" @HideModal="HideModal"/> 
     </div>
 </template>
 
@@ -129,6 +129,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+    .create-btn{
+        background-color: #5f5ab9;
+        border-radius: 10px;
+        box-shadow: 2px 2px 5px rgb(187, 187, 187);
+        width: fit-content;
+        margin-top: 7px;
+        padding: 10px;
+        color: #ffffff;
+        font-weight: 700;
+        transition: color 0.25s;
+        transition: background-color 0.25s;
+        cursor: pointer;
+    }
 
     .list{
         display: flex;
@@ -136,8 +149,8 @@ export default {
     }
 
     .list-element{
-        width: 200px;
-        height: 200px;
+        min-width: 250px;
+        min-height: 250px;
     }
 
     .select-project{

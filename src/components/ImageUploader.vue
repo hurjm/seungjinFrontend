@@ -1,18 +1,12 @@
 <template>
-    <div class="image-uploader"
+    <div class="image-container"
         @dragenter="OnDragEnter"
         @dragleave="OnDragLeave"
         @dragover.prevent
         @drop="OnDrop"
         :class="{dragging: isDragging}">
 
-        <div class="upload-control" v-show="images.length">
-            <label for="file">Select a file</label>
-            <button @click="upload">Upload</button>
-        </div>
-
         <div v-show="!images.length">
-            <i class="fa fa-cloud-upload"></i>
             <p>Drag your images here</p>
             <div>OR</div>
             <div class="image-input">
@@ -83,12 +77,16 @@ export default {
             }
         },
         OnDrop(e){
+            console.log('drop');
             e.preventDefault();
             e.stopPropagation();
 
             this.isDragging = false;
 
             const files = e.dataTransfer.files;
+            console.log(files);
+            this.file = files[0];
+            this.upload();
 
             if(files.length == 1){
                 Array.from(files).forEach(file => this.addImage(file));
@@ -109,16 +107,23 @@ export default {
 
             this.images.pop();
             reader.onload = (e) => this.images.push(e.target.result);
-
+            // reader.onload((e) => {
+            //     this.images.push(e.target.result)
+            //     this.upload();
+            // });
             reader.readAsDataURL(file);
         },
         OnInputChange(e){
             const files = e.target.files;
+            console.log(files);
+            console.log(files[0]);
+            console.log(this.$refs.file.files[0]);
             this.file = this.$refs.file.files[0];
+            this.upload();
 
             Array.from(files).forEach(file => this.addImage(file));
         },
-        async upload(e){
+        async upload(){
             var temp = this.file.slice(0, this.file.size, this.file.type);
             if(this.customerID != null){
                 this.file = new File([temp], this.customerID, {type: String(this.file.type)});
@@ -167,26 +172,25 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    .image-uploader{
-        width: 80%;
-        color: #fff;
-        padding: 40px 15px;
-        text-align: center;
+    .image-container{
+        background-color: #ffffff;
         border-radius: 10px;
-        border: 3px dashed #fff;
+        box-shadow: 2px 2px 5px rgb(187, 187, 187);
+        width: 93%;
+        min-width: 500px;
+        color: #000000;
+        padding: 10px;
+        text-align: center;
         font-size: 20px;
+        font-weight: 700;
         position: relative;
+        align-items: center;
 
 
         &.dragging{
             background: #fff;
-            color: #2196F3;
-            border: 3px dashed #2196F3;
+            box-shadow: 2px 2px 15px rgb(187, 187, 187);
             
-            .image-input label{
-                background: #2196F3;
-                color:#fff;
-            }
         }
     }
 
@@ -199,7 +203,6 @@ export default {
         label,
         input {
             background: #fff;
-            color:#2196F3;
             width:100%;
             position: absolute;
             left:0;
@@ -219,22 +222,25 @@ export default {
     .images-preview{
         display: flex;
         flex-wrap: wrap;
-        margin-top: 20px;
+        height: fit-content;
+        width: fit-content;
     }
 
     .img-wrapper{
         // width: 500px;
         // display: flex;
         // flex-direction: column;
-        margin: 10px;
+        // margin: 10px;
         // height: 500px;
         justify-content: space-between;
         background: #fff;
-        box-shadow: 5px 5px 20px #3e3737;
-        border:3px solid #000;
+        // box-shadow: 5px 5px 5px rgb(187, 187, 187);
+        border-radius: 10px;
+        overflow: hidden;
 
         img{
-            max-height: 300px;
+            height: auto;
+            width: 100%;
         }
     }
 

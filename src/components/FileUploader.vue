@@ -22,10 +22,6 @@
                 <span @click="DownloadFile" :id="file.id + file.name">{{file.name}}</span>
                 <span @click="DeleteFile" :id="file.id + file.name" class="cancel_btn"></span>
             </div>
-            <!-- <div class="file-wrapper" :id="projectID + '_' + index + '.' + file" v-for="(file, index) in images" :key="index">
-                <span @click="DownloadFile" :id="projectID + '_' + index + '.' + file">{{file}}</span>
-                <span @click="DeleteFile" :id="projectID + '_' + index + '.' + file" class="cancel_btn"></span>
-            </div> -->
         </div>
     </div>
 </template>
@@ -203,27 +199,24 @@ export default {
 
 <style lang="scss" scoped>
     .file-uploader{
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 2px 2px 5px rgb(187, 187, 187);
         display: flex;
         flex-direction: column;
-        width: 100px;
+        width: 300px;
         min-height: 100px;
         height: fit-content;
-        background: #2196F3;
-        color: #fff;
+        color: #000000;
         text-align: center;
-        border-radius: 10px;
-        border: 3px dashed #fff;
-        font-size: 10px;
+        border:2px dashed #000000;
+        padding: 10px;
+        font-size: 15px;
+        font-weight: 700;
 
         &.dragging{
-            background: #fff;
-            color: #2196F3;
-            border: 3px dashed #2196F3;
+            box-shadow: 2px 2px 20px rgb(187, 187, 187);
             
-            .file-input label{
-                background: #2196F3;
-                color:#fff;
-            }
         }
     }
 
@@ -260,16 +253,23 @@ export default {
         font-size:10px;
         align-items: center;
         flex-direction: row;
-        padding: 2px;
+        padding: 4px;
         margin: 10px;
         justify-content: space-between;
         text-overflow:ellipsis;
         word-break:break-all;
-        box-shadow: 5px 5px 20px #3e3737;
-        border:3px solid #000;
+        border-radius: 10px;
+        box-shadow: 2px 2px 5px rgb(187, 187, 187);
+        border:2px solid #000;
 
         img{
             max-height: 300px;
+        }
+
+        span:hover{
+            color: #727272;
+            opacity: 0.7;
+            cursor: pointer;
         }
     }
 

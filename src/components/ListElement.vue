@@ -1,19 +1,22 @@
 <template>
 <div class="element" @click="Select">
-    <div class="option" v-if="isOption" @click="Option">
-    </div>
-    <div class="dropdown" v-show="dropdown">
-        <div>
-            <li><button @click="Update">수정</button></li>
-            <li><button @click="Delete">삭제</button></li>
-        </div>
-    </div>
-    <div>
+    <div class="content-container">
         <div class="title">
             {{title}}
         </div>
         <div class="note" v-if="note != null">
             {{note}}
+        </div>
+    </div>
+
+    <div class="option-container">
+        <div class="option-btn" v-if="isOption" @click="Option">
+        </div>
+        <div class="dropdown-container" v-show="dropdown">
+            <div class="dropdown-content">
+                <div class="dropdown-btn" @click="Update">수정</div>
+                <div class="dropdown-btn" @click="Delete">삭제</div>
+            </div>
         </div>
     </div>
 </div>
@@ -82,40 +85,82 @@ export default {
 
 <style lang="scss" scoped>
     .element{
-        width: 100px;
-        height: 100px;
+        display: flex;
+        justify-content: space-between;
+        // width: 80%;
+        min-width: 125px;
+        min-height: 125px;
+        height: fit-content;
+        box-sizing: border-box;
+        // margin-right: 10px;
+        // margin-left: 10px;
+        margin: 10px;
+        background-color: #ffffff;
         border-radius: 10px;
-        box-shadow: 3px 3px 3px #000;
-        padding: 5px;
-        margin: 5px;
-    }
-
-    .dropdown{
-        border: 3px solid #000;
-        background: #fff;
-        float: right;
-        width: 50px;
-        text-align: center;
-        margin-top: 20px;
-
-        li{
-            list-style: none;
-            margin: 2px;
-            border: 1px solid #000;
-        }
-    }
-
-    .option{
-        background: #fff;
-        background-image: url(../assets/option_btn.png);
-        float: right;
-        width: 20px;
-        height: 20px;
+        box-shadow: 2px 2px 5px rgb(187, 187, 187);
+        padding: 10px;
+        // margin: 5px;
         cursor: pointer;
     }
 
+    .element:hover{
+        box-shadow: 2px 2px 10px rgb(187, 187, 187);
+    }
+
+    .content-container{
+        display: inline-flex;
+        flex-direction: column;
+    }
+
+     .option-container{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        position: relative;
+        top: 0;
+        right: 0;
+
+        .option-btn{
+            // background: #fff;
+            background-image: url(../assets/option_btn.png);
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .option-btn:hover{
+            opacity: 0.5;
+        }
+
+        .dropdown-container{
+            display: inline;
+            padding: 5px;
+            border-radius: 10px;
+            box-shadow: 2px 2px 8px rgb(187, 187, 187);
+            margin-top: 3px;
+
+            .dropdown-content{
+                display: flex;
+                flex-direction: column;
+
+                .dropdown-btn{
+                    font-weight: 600;
+                    margin: 3px;
+                    min-width: 35px;
+                }
+
+                .dropdown-btn:hover{
+                    color: #6b6b6b;
+                }
+            }
+        }
+    }
+
+
+    
+
     .title{
-        font-size: 20px;
-        cursor: default;
+        font-size: 24px;
+        font-weight: 600;
     }
 </style>
