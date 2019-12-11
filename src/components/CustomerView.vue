@@ -1,9 +1,11 @@
 <template>
     <div>
-        <div class="create-btn" @click="CreateBtn">New Customer</div>
         <div class="list">
-            <list-element class="list-element" v-for="item in this.customers" :key="item.id" 
-            @ShowModal="ShowModal" @Delete="Delete" @Select="Select" :id="item.id" :title="item.title" :note="item.note" :isOption="true"/>
+            <draggable class="drag-area" v-model="productionCodes" group="people" @start="drag=true" @end="drag=false">
+                <list-element class="list-element" v-for="item in this.customers" :key="item.id" 
+                @ShowModal="ShowModal" @Delete="Delete" @Select="Select" :id="item.id" :title="item.title" :note="item.note" :isOption="true"/>
+            </draggable>
+            <div class="create-btn" @click="CreateBtn"/>
         </div>
         
         <modal v-if="showModal" :width="250" :height="125" :data="modalData" @Create="Create" @Update="Update" @HideModal="HideModal"/> 
@@ -14,6 +16,7 @@
 import axios from 'axios'
 import listElement from "./ListElement.vue";
 import modal from "./Modal.vue";
+import draggable from 'vuedraggable';
 
 export default {
     props:{
@@ -116,6 +119,7 @@ export default {
         }
     },
     components:{
+        draggable,
         listElement,
         modal
     }
@@ -127,14 +131,23 @@ export default {
         background-color: #5f5ab9;
         border-radius: 10px;
         box-shadow: 2px 2px 5px rgb(187, 187, 187);
-        width: fit-content;
-        margin-top: 7px;
+        min-width: 250px;
+        min-height: 250px;
+        margin: 10px;
         padding: 10px;
+        box-sizing: border-box;
+        // width: fit-content;
+        // margin-top: 7px;
+        // padding: 10px;
         color: #ffffff;
         font-weight: 700;
         transition: color 0.25s;
         transition: background-color 0.25s;
         cursor: pointer;
+    }
+
+    .create-btn:hover{
+        box-shadow: 2px 2px 10px rgb(187, 187, 187);
     }
 
     .list-element{
@@ -143,7 +156,15 @@ export default {
     }
 
     .list{
+        // display: flex;
+        // flex-direction: row;
+        // flex-wrap: wrap;
+    }
+
+    .drag-area{
+        position: relative;
         display: flex;
         flex-direction: row;
+        flex-wrap: wrap;
     }
 </style>

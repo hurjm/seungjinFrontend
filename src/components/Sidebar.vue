@@ -1,19 +1,50 @@
 <template>
     <div class="sidebar-container">
-        <div class="item" @click="SelectScreen" id="0">
-            Home
+        <div class="head">
+            <img src="../assets/images/logo.gif" alt="sorry;"/>
         </div>
-        <div class="item" v-show="screenNum > 1" @click="SelectScreen" id="1">
-            프로젝트
-        </div>
-        <div class="item" v-show="screenNum > 1" @click="SelectScreen" id="2">
-            처방
-        </div>
-        <div class="item" v-show="screenNum > 1" @click="SelectScreen" id="3">
-            부자재
-        </div>
-        <div class="item" v-show="screenNum > 1" @click="SelectScreen" id="4">
-            생산
+        <div class="item-list">
+            <div class="item" @click="SelectScreen" id="1">
+                <div class="item-name">
+                    고객사  
+                </div>
+                <div class="item-content-container">
+                    <div class="item-content-list">
+                        <div class="item-content">
+                            test
+                        </div>
+                        <div class="item-content">
+                            test
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="item" @click="SelectScreen" id="2">
+                <div class="item-name">
+                    프로젝트
+                </div>
+                <div class="item-content-container">
+                    <div class="item-content-list">
+                        <div class="item-content">
+                            test
+                        </div>
+                        <div class="item-content">
+                            test
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item" v-show="screenNum > 1" @click="SelectScreen" id="2">
+                처방
+            </div>
+            <div class="item" v-show="screenNum > 1" @click="SelectScreen" id="3">
+                부자재
+            </div>
+            <div class="item" v-show="screenNum > 1" @click="SelectScreen" id="4">
+                생산
+            </div>
         </div>
     </div>
 </template>
@@ -36,11 +67,19 @@ export default {
     // },
     methods:{
         SelectScreen(e){
-            console.log('e.target.id');
-            console.log(e.target.id);
-
-           
+            console.log('SelectScreen');
+            console.log(e.target.nextSibling.childNodes[0].style);
+            //item dropdown
+            if(e.target.nextSibling.childNodes[0].style.marginTop != '0px'){
+                e.target.nextSibling.childNodes[0].style.marginTop = '0';
+            }
+            else{
+                e.target.nextSibling.childNodes[0].style.marginTop = '-100%';
+            }
             this.$emit("SelectScreen", e.target.id);
+        },
+        Dropdown(){
+            console.log('dropdown');
         }
     }
 }
@@ -48,33 +87,76 @@ export default {
 
 <style lang="scss" scoped>
     .sidebar-container{
+        background-color: #232e3d;
         display: flex;
-        // position: absolute;
-        // top: 0;
-        // left: 0;
-        // bottom: 0;
-        min-width: 200px;
-        min-height: 100%;
-        margin-right: 10px;
-        align-items: center;
-        padding-top: 50px;
         flex-direction: column;
-        // background-color: #F7F6F3;
-        overflow: hidden;
+        // bottom: 0;
+        align-items: center;
+    }
 
-        .item{
-            margin: 5px;
-            margin-top: 10px;
-            font-size: 30px;
-            font-weight: 900;
-            color: #000;
-            transition: color 0.1s linear;
-            cursor: pointer;
-        }
+    .head{
+        background-color: #19222d;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color:#ffffff;
+        height: 55px;
+        width: 100%;
+    }
 
-        .item:hover{
-            color: rgb(138, 138, 138);
+    .item-list{
+        width: 100%;
+        margin-top: 20px;
+        color: #ffffff;
+        font-size: 15px;
+        font-weight: 300;
+    }
+
+    input[type=checkbox]{
+        display: none;
+    }
+
+    input:checked + label .item{
+            margin-top: 0;
+        .item-content-container{
+            .item-content-list{
+            margin-top: 0;
+
+            }
         }
     }
-    
+
+    .item{
+        cursor: pointer;
+    }
+    .item-name{
+        padding: 5px 20px;
+        transition: background-color 0.1s linear;
+    }
+
+    .item-name:hover {
+        background-color: #506d91;
+    }
+
+
+    .item-content-container{
+        overflow: hidden;
+    }
+
+    .item-content-list{
+        width: 100%;
+        margin-top:-100%;
+        transition: margin-top 0.125s ease;
+    }
+
+    .item-content{
+        width: 100%;
+        padding-left: 40px;
+        padding-bottom: 2px;
+    }
+
+    .item-content:hover{
+        background-color: #506d91;
+    }
 </style>

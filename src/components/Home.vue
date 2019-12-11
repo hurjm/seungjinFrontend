@@ -1,5 +1,6 @@
 <template>
     <div class="home-container">
+        <headbar class="headbar" :screenNum="screen"/>
         <sidebar class="sidebar" :screenNum="screen" @SelectScreen="SelectScreen"></sidebar>
         <div class="page-wrap">
             <customerView v-if="screen==0" @SelectCustomer='SelectCustomer'></customerView>
@@ -13,6 +14,7 @@
 
 <script>
 import Vue from 'vue';
+import headbar from './Header.vue';
 import sidebar from './Sidebar.vue';
 import projectView from './ProjectView.vue';
 import recipeView from "./RecipeView.vue";
@@ -45,6 +47,7 @@ export default {
 
     },
     components:{
+        headbar,
         sidebar,
         projectView,
         recipeView,
@@ -56,42 +59,54 @@ export default {
 </script>
 
 <style lang="scss" >
+    @import url(//cdn.jsdelivr.net/gh/moonspam/NanumBarunGothic@1.0/nanumbarungothicsubset.css);
+    @import url(//fonts.googleapis.com/earlyaccess/nanumgothic.css);
+
     * {
         user-select: none;
     }   
 
     .home-container{
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
+        font-family: 'NanumBarunGothic', sans-serif;
         // justify-content: flex-start;
         // height: 100%;
     }
 
-    .page-wrap{
-        // position: absolute;
-        // left: 220px;
-        width: 75%;
-        margin-bottom: 40px;
+    .headbar{
+        position: fixed;
+        z-index: 10;
+        top: 0;
+        left: 234.5px;
+        height: 55px;
+        width: 100%;
+        // margin-left: 235px;
     }
 
-    // .sidebar{
-    //     display: flex;
-    //     position:fixed;
-    //     top: 0;
-    //     min-width: 200px;
-    //     min-height: 100%;
-    //     margin-right: 10px;
-    //     align-items: center;
-    //     padding-top: 50px;
-    //     flex-direction: column;
-    //     background-color: #F7F6F3;
-    //     font-size: 30px;
-    //     font-weight: 700;
-    //     overflow: hidden;
+    .page-wrap{
+        width: 75%;
+        height: 100%;
+        margin-top: 55px;
+        margin-bottom: 40px;
+        margin-left: 235px;
+    }
 
-    //     div{
-    //         margin: 5px;
-    //     }
+    .sidebar{
+        position: fixed;
+        top: 0;
+        left: 0;
+        margin-right: 10px;
+        width: 234.5px;
+        min-height: 100%;
+    }
 
+    
+
+    // @font-face { font-family: 'NanumBarunGothic';
+    // src: url('../fonts/NanumBarunGothic.eot');
+    // src: url('../fonts/NanumBarunGothic.eot') format('embedded-opentype'),
+    // url('../fonts/NanumBarunGothic.woff') format('woff');
     // }
+
 </style>

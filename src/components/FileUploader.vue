@@ -294,7 +294,7 @@ export default {
         margin-right: 1px;
         min-width: 10px;
         min-height: 10px;
-        background-image: url(../assets/cancel_btn.png);
+        background-image: url(../assets/images/cancel_btn.png);
     }
 
     .upload-control{

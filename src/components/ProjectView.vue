@@ -1,9 +1,21 @@
 <template>
     <div>
-        <div class="create-btn" @click="CreateBtn">New Project</div>
-        <div class="list">
-            <list-element class="list-element" v-for="item in projects" :key="item.id" 
+        <div class="table">
+            <div class="table-property-list">
+                <div class="table-property" id="title">
+                    프로젝트명
+                </div>
+                <div class="table-property" id="start-date">
+                    시작일
+                </div>
+                <div class="table-property" id="launching-date">
+                    런칭예정일
+                </div>
+            </div>
+            <table-element class="table-element" v-for="item in projects" :key="item.id" 
             @ShowModal="ShowModal" @Delete="Delete" @Select="Select" :id="item.id" :title="item.title" :isOption="true"/>
+        
+            <div class="create-btn" @click="CreateBtn">New Project</div>
         </div>
         <modal v-if="showModal" :width="250" :height="125" :data="modalData" @Create="Create" @Update="Update" @HideModal="HideModal"/> 
     </div>
@@ -11,7 +23,7 @@
 
 <script>
 import axios from 'axios'
-import listElement from "./ListElement.vue";
+import tableElement from "./TableElement.vue";
 import modal from "./Modal.vue";
 
 export default {
@@ -122,7 +134,7 @@ export default {
         }
     },
     components:{
-        listElement,
+        tableElement,
         modal
     }
 }
@@ -143,18 +155,41 @@ export default {
         cursor: pointer;
     }
 
-    .list{
+    .table{
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
     }
 
-    .list-element{
+    .table-property-list{
+        display: flex;
+        flex-direction: row;
+        border: 0.1px solid rgb(199, 199, 199);
+    }
+
+    .table-property{
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 35px;
+    }
+
+    #title{
+        min-width: 200px;
+        border-right: 0.1px solid rgb(199, 199, 199);
+    }
+
+    #start-date{
+        max-width: 150px;
+        border-right: 0.1px solid rgb(199, 199, 199);
+    }
+    #launching-date{
+        max-width: 150px;
+    }
+
+
+    .table-element{
         min-width: 250px;
         min-height: 250px;
     }
-
-    .select-project{
-        float: left;
-    }
-
 </style>
