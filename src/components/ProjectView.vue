@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="container">
         <div class="table">
             <div class="table-property-list">
                 <div class="table-property" id="title">
@@ -12,12 +12,26 @@
                     런칭예정일
                 </div>
             </div>
-            <table-element class="table-element" v-for="item in projects" :key="item.id" 
-            @ShowModal="ShowModal" @Delete="Delete" @Select="Select" :id="item.id" :title="item.title" :isOption="true"/>
-        
-            <div class="create-btn" @click="CreateBtn">New Project</div>
+            <div class="table-element-list">
+                <draggable class="drag-area" v-model="projects" group="projects" @start="drag=true" @end="drag=false">
+                    <table-element class="table-element" v-for="item in projects" :key="item.id" 
+                    @ShowModal="ShowModal" @Delete="Delete" @Select="Select" :isOption="true"
+                    :id="item.id" 
+                    :title="item.title" 
+                    :startDate="item.start_date" 
+                    :launchingDate="item.launching_date"/>
+                </draggable>
+                <div class="create-btn" @click="CreateBtn">+New Project</div>
+            </div>
         </div>
-        <modal v-if="showModal" :width="250" :height="125" :data="modalData" @Create="Create" @Update="Update" @HideModal="HideModal"/> 
+        <modal v-if="showModal" :width="250" :height="125" @Create="Create" @Update="Update" @HideModal="HideModal"
+        :isProject="true"
+        :id="modalData.id"
+        :title="modalData.title"
+        :startDate="modalData.startDate"
+        :launchingDate="modalData.launchingDate"
+        :mode="modalData.mode"
+        /> 
     </div>
 </template>
 
@@ -25,6 +39,7 @@
 import axios from 'axios'
 import tableElement from "./TableElement.vue";
 import modal from "./Modal.vue";
+import draggable from 'vuedraggable';
 
 export default {
     props:{
@@ -35,7 +50,6 @@ export default {
             project: '',
             childMessage: '',
             projects: [],
-            currentCustomerID: this.customerID,
             currentProjectID:null,
             showModal: false,
             modalData: []
@@ -45,25 +59,47 @@ export default {
         this.GetList()
     },
     watch: {
-        customerID: function(customerID){
-            this.currentCustomerID = customerID;
-            console.log("cus " + customerID);
+        projects:function(){
+            console.log('test')
+            this.UpdateOrder();
         }
     },
     methods: {
+        UpdateOrder(){
+            let updateList = [];
+            this.projects.forEach((project, index)=>{
+                if(project.list_order != index){
+                    project.list_order = index;
+                    updateList.push(project);
+                }
+            });
+
+            if(updateList.length > 0){
+                axios.post('http://localhost:80/updateprojectsorder', updateList)
+                .then((res) =>{
+                    console.log(res);
+                }).catch((err) => {
+                    console.log(err);
+                })
+            }
+            
+        },
         Select(id){
             this.$emit('SelectProject', id)
         },
         Create(data){
             this.HideModal();
+            console.log(data.startDate.length)
+            console.log(data.launchingDate)
             var temp ={
                 title: data.title, 
-                customer_id: this.currentCustomerID,
+                customer_id: this.customerID,
                 state: 0, 
-                startdate: Date.now(),
-                enddate: null
+                start_date: data.startDate,
+                launching_date: data.launchingDate,
+                list_order: this.projects.length
                 }
-            axios.post('http://localhost:80/addproject', temp)
+            axios.post('http://localhost:80/createproject', temp)
             .then((res) =>{
                 temp.id = res.data.data;
                 this.projects.push(temp)
@@ -75,6 +111,8 @@ export default {
         },
         Update(data){
             this.HideModal();
+            console.log('testtest1111')
+            console.log(data);
             axios.post('http://localhost:80/updateproject', data)
             .then((res) => {
                 console.log(res);
@@ -82,6 +120,8 @@ export default {
                     this.projects.forEach((project, index) => {
                         if(this.projects[index].id == data.id){
                             this.projects[index].title = data.title;
+                            this.projects[index].start_date = data.startDate;
+                            this.projects[index].launching_date = data.launchingDate;
                             return;
                         }
                     });
@@ -108,7 +148,7 @@ export default {
         },
         GetList(event, data){
             console.log("getprojects");
-            axios.post('http://localhost:80/getprojects', {customer_id: this.currentCustomerID})
+            axios.post('http://localhost:80/getprojects', {customer_id: this.customerID})
             .then((res) => {
                 console.log(res);
                 for(var i=0; i<res.data.data.length; i++){
@@ -126,33 +166,35 @@ export default {
             console.log(data);
             this.modalData = data;
             this.showModal = true;
-            console.log(this.showModal);
         },
         CreateBtn(){
             console.log("createbtn");
-            this.ShowModal({mode: 'create'});
+            this.ShowModal({title: "", mode: 'create'});
         }
     },
     components:{
         tableElement,
-        modal
+        modal,
+        draggable
     }
 }
 </script>
 
 <style lang="scss" scoped>
     .create-btn{
-        background-color: #5f5ab9;
-        border-radius: 10px;
-        box-shadow: 2px 2px 5px rgb(187, 187, 187);
-        width: fit-content;
+        text-align: center;
+        width: 100%;
         margin-top: 7px;
         padding: 10px;
-        color: #ffffff;
+        color: rgb(199, 199, 199);
         font-weight: 700;
         transition: color 0.25s;
         transition: background-color 0.25s;
         cursor: pointer;
+    }
+
+    .create-btn:hover{
+        color: rgb(99, 99, 99);
     }
 
     .table{
@@ -180,16 +222,24 @@ export default {
     }
 
     #start-date{
-        max-width: 150px;
+        max-width: 175px;
         border-right: 0.1px solid rgb(199, 199, 199);
     }
     #launching-date{
-        max-width: 150px;
+        max-width: 175px;
+    }
+
+    .table-element-list{
+        display: flex;
+        flex-direction: column;;
+        border-right: 0.1px solid rgb(199, 199, 199);
+        border-left: 0.1px solid rgb(199, 199, 199);
+        border-bottom: 0.1px solid rgb(199, 199, 199);
     }
 
 
     .table-element{
-        min-width: 250px;
-        min-height: 250px;
+        // min-width: 250px;
+        // min-height: 250px;
     }
 </style>

@@ -4,8 +4,8 @@
             <img src="../assets/images/logo.gif" alt="sorry;"/>
         </div>
         <div class="item-list">
-            <div class="item" @click="SelectScreen" id="1">
-                <div class="item-name">
+            <div class="item" @click="SelectScreen">
+                <div class="item-name" id="0">
                     고객사  
                 </div>
                 <div class="item-content-container">
@@ -20,8 +20,8 @@
                 </div>
             </div>
             
-            <div class="item" @click="SelectScreen" id="2">
-                <div class="item-name">
+            <div class="item" @click="SelectScreen">
+                <div class="item-name" id="1">
                     프로젝트
                 </div>
                 <div class="item-content-container">
@@ -36,7 +36,54 @@
                 </div>
             </div>
 
-            <div class="item" v-show="screenNum > 1" @click="SelectScreen" id="2">
+
+            <div class="item" @click="SelectScreen">
+                <div class="item-name" id="2">
+                    처방
+                </div>
+                <div class="item-content-container">
+                    <div class="item-content-list">
+                        <div class="item-content">
+                            test
+                        </div>
+                        <div class="item-content">
+                            test
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="item" @click="SelectScreen">
+                <div class="item-name" id="3">
+                    부자재
+                </div>
+                <div class="item-content-container">
+                    <div class="item-content-list">
+                        <div class="item-content">
+                            test
+                        </div>
+                        <div class="item-content">
+                            test
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="item" @click="SelectScreen">
+                <div class="item-name" id="4">
+                    생산
+                </div>
+                <div class="item-content-container">
+                    <div class="item-content-list">
+                        <div class="item-content">
+                            test
+                        </div>
+                        <div class="item-content">
+                            test
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="item" v-show="screenNum > 1" @click="SelectScreen" id="2">
                 처방
             </div>
             <div class="item" v-show="screenNum > 1" @click="SelectScreen" id="3">
@@ -44,7 +91,7 @@
             </div>
             <div class="item" v-show="screenNum > 1" @click="SelectScreen" id="4">
                 생산
-            </div>
+            </div> -->
         </div>
     </div>
 </template>
@@ -68,7 +115,7 @@ export default {
     methods:{
         SelectScreen(e){
             console.log('SelectScreen');
-            console.log(e.target.nextSibling.childNodes[0].style);
+            console.log(e.target.id);
             //item dropdown
             if(e.target.nextSibling.childNodes[0].style.marginTop != '0px'){
                 e.target.nextSibling.childNodes[0].style.marginTop = '0';

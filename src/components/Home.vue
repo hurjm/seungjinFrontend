@@ -76,7 +76,7 @@ export default {
 
     .headbar{
         position: fixed;
-        z-index: 10;
+        z-index: 2;
         top: 0;
         left: 234.5px;
         height: 55px;
@@ -85,7 +85,7 @@ export default {
     }
 
     .page-wrap{
-        width: 75%;
+        width: 80%;
         height: 100%;
         margin-top: 55px;
         margin-bottom: 40px;

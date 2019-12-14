@@ -173,18 +173,17 @@ export default {
 
 <style lang="scss" scoped>
     .image-container{
-        background-color: #ffffff;
-        border-radius: 10px;
-        box-shadow: 2px 2px 5px rgb(187, 187, 187);
-        width: 93%;
+        // border-radius: 10px;
+        // box-shadow: 2px 2px 5px rgb(187, 187, 187);
+        width: 100%;
         min-width: 500px;
         color: #000000;
-        padding: 10px;
+        border: 0.1px solid rgb(199, 199, 199);
+        
         text-align: center;
         font-size: 20px;
         font-weight: 700;
-        position: relative;
-        align-items: center;
+        margin-bottom: 4px;
 
 
         &.dragging{
@@ -202,7 +201,6 @@ export default {
 
         label,
         input {
-            background: #fff;
             width:100%;
             position: absolute;
             left:0;

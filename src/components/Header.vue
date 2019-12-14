@@ -3,6 +3,9 @@
         <div class="item" v-show="screenNum==0">
             고객사
         </div>
+        <div class="item" v-show="screenNum==1">
+            프로젝트
+        </div>
     </div>
 </template>
 

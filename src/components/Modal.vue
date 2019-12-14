@@ -2,13 +2,25 @@
     <div class="modal-background" v-show="isShow">
         <div class="modal" >
             <div class="container">
-                <input class="title" v-model="data.title" placeholder="NAME">
-                <div v-if="data.note != null">
+                <input class="title" v-model="title" placeholder="NAME" v-if="title!=null">
+                <div v-if="note != null">
                     <ResizeAuto>
                         <template v-slot:default="{resize}">
-                            <textarea class="note" v-model="data.note" @input="resize" placeholder="NOTE"/>
+                            <textarea class="note" v-model="note" @input="resize" placeholder="NOTE"/>
                         </template>
                     </ResizeAuto>
+                </div>
+                <div class="subMaterials" v-if="isSubMaterials">
+                    <input type="text" v-model="code" placeholder="코드">
+                    <input type="text" v-model="BOM" placeholder="BOM">
+                    <input type="text" v-model="demandCap" placeholder="소요량">
+                    <input type="text" v-model="indicationCap" placeholder="표시용량">
+                    <input type="text" v-model="realCap" placeholder="실용량">
+                    <input type="text" v-model="subConstractor" placeholder="협력업체">
+                </div>
+                <div v-if="isProjects">
+                    <datepicker id="start-datepicker" :value="startDate" :format="'yyyy년 MM월 dd일'" :placeholder="'시작일'"></datepicker>
+                    <datepicker id="launching-datepicker" :value="launchingDate" :format="'yyyy년 MM월 dd일'" :placeholder="'런칭일'"></datepicker>
                 </div>
                 <div class="button-container">
                     <span class="button" @click="Confirm">확인</span>
@@ -19,11 +31,21 @@
     </div>
 </template>
 
+
 <script>
 import ResizeAuto from "./ResizeAuto.vue";
+import Datepicker from 'vuejs-datepicker';
 
 export default {
     props:{
+        isProjects:{
+            type: Boolean,
+            default: false
+        },
+        isSubMaterials:{
+            type: Boolean,
+            default: false
+        },
         width:{
             type: Number,
             default: 200
@@ -36,39 +58,99 @@ export default {
             type: Boolean,
             default: false
         },
-        data: {
-            id: {
-                type: Number,
-                default: null
-            },
-            title: {
-                type: String,
-                default: ""
-            },
-            note: {
-                type: String,
-                default: null
-            },
-            mode: {
-                type: String,
-                default: null
-            }
+        id: {
+            type: Number,
+            default: null
+        },
+        title: {
+            type: String,
+            default: null
+        },
+        note: {
+            type: String,
+            default: null
+        },
+        startDate: {
+            type: Date,
+            default: Date.now()
+        },
+        launchingDate: {
+            type: Date,
+            default: null
+        },
+        code:{
+            type: String,
+            default: null
+        },
+        BOM:{
+            type: String,
+            default: null
+        },
+        demandCap:{
+            type: Number,
+            default: null
+        },
+        indicationCap:{
+            type: Number,
+            default: null
+        },
+        realCap:{
+            type: Number,
+            default: null
+        },
+        subConstractor:{
+            type: String,
+            default: null
+        },
+        mode: {
+            type: String,
+            default: null
         }
     },
     mounted(){
         console.log('mounted');
-        console.log(this.data);
+        console.log(this.startDate);
         this.isShow = true;
     },
     methods:{
         Confirm(){
             this.isShow = false;
-            if(this.data.mode == "update"){
-                this.$emit('Update', {id: this.data.id, title: this.data.title, note: this.data.note});
+            if(this.mode == "update"){
+                 if(this.isProjects){
+                    console.log('testtest')
+                    let startDate = document.getElementById("start-datepicker").value;
+                    let launchingDate = document.getElementById("launching-datepicker").value;
+                    this.$emit('Update', {id: this.id, title: this.title, startDate: startDate, launchingDate: launchingDate});
+                }
+                else{
+                    this.$emit('Update', {id: this.id, title: this.title, note: this.note});
+                }
             }
-            else if(this.data.mode == "create"){
+            else if(this.mode == "create"){
                 console.log("create");
-                this.$emit('Create', {title: this.data.title, note: this.data.note});
+                if(this.isProjects){
+                    let startDate = document.getElementById("start-datepicker").value;
+                    // startDate = startDate.replace("년 ", "-").replace("월 ", "-").replace("일", "");
+
+                    let launchingDate = document.getElementById("launching-datepicker").value;
+                    // launchingDate = launchingDate.replace("년 ", "-").replace("월 ", "-").replace("일", "");
+                    this.$emit('Create', {
+                        title: this.title, 
+                        startDate: startDate, 
+                        launchingDate: launchingDate});
+                }
+                else if(this.isSubMaterials){
+                    this.$emit('Create', {
+                        code: this.code, 
+                        BOM: this.BOM, 
+                        demandCap: this.demandCap, 
+                        indicationCap: this.indicationCap, 
+                        realCap: this.realCap, 
+                        subConstractor: this.subConstractor});
+                }
+                else{
+                    this.$emit('Create', {title: this.title, note: this.note});
+                }
             }
         },
         Cancel () {
@@ -77,12 +159,14 @@ export default {
         }
     },
     components: { 
-        ResizeAuto 
+        ResizeAuto,
+        Datepicker
     }
 }
 </script>
 
 <style lang="scss" scoped>
+
     .modal-background{
         position: fixed;
         top: 0;
@@ -90,6 +174,7 @@ export default {
         background-color: rgba(0, 0, 0, 0.25);
         width: 100%;
         height: 100%;
+        z-index: 3;
     }
     .container{
         background-color: #fff;
@@ -124,6 +209,11 @@ export default {
         border: 1px solid rgb(0, 0, 0);
         resize: none;
         overflow: hidden; 
+    }
+
+    .subMaterials{
+        display: flex;
+        flex-direction: column;
     }
 
     .button-container{

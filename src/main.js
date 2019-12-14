@@ -2,10 +2,6 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import axios from 'axios' 
-import VModal from 'vue-js-modal'
-
-Vue.use(VModal, { dynamic: true, dynamicDefaults: { clickToClose: false }});
-
 Vue.prototype.$http = axios;
 
 Vue.config.productionTip = false;

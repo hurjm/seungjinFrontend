@@ -1,14 +1,5 @@
 <template>
 <div class="element" @click="Select">
-    <div class="content-container">
-        <div class="title">
-            {{title}}
-        </div>
-        <div class="note" v-if="note != null">
-            {{note}}
-        </div>
-    </div>
-
     <div class="option-container">
         <div class="option-btn" v-if="isOption" @click="Option">
         </div>
@@ -18,6 +9,16 @@
                 <div class="dropdown-btn" @click="Delete">삭제</div>
             </div>
         </div>
+    </div>
+
+    <div class="table-property" id="title" v-if="title!=null">
+        {{title}}
+    </div>
+    <div class="table-property" id="start-date" v-if="startDate!=null">
+        {{startDate}}
+    </div>
+    <div class="table-property" id="launching-date" v-if="launchingDate!=null">
+        {{launchingDate}}
     </div>
 </div>
 </template>
@@ -31,9 +32,13 @@ export default {
         },
         title: {
             type: String,
-            default: ""
+            default: null
         },
-        note: {
+        startDate: {
+            type: String,
+            default: null
+        },
+        launchingDate: {
             type: String,
             default: null
         },
@@ -50,7 +55,10 @@ export default {
     methods:{
         Update(){
             console.log("Update");
-            this.$emit("ShowModal", {id: this.id, title: this.title, note: this.note, mode: "update"});
+            let startDateConverted =  new Date(this.startDate.replace("년 ", "-").replace("월 ", "-").replace("일", ""));
+            let launchingDateConverted =  new Date(this.launchingDate.replace("년 ", "-").replace("월 ", "-").replace("일", ""));
+            console.log(startDateConverted)
+            this.$emit("ShowModal", {id: this.id, title: this.title, startDate: startDateConverted, launchingDate: launchingDateConverted, mode: "update"});
             this.ChangeDropDown();
             console.log("Update");
         },
@@ -85,20 +93,30 @@ export default {
 
 <style lang="scss" scoped>
     .element{
-        display: flex;
-        justify-content: space-between;
-        // width: 80%;
-        min-width: 125px;
-        min-height: 125px;
-        height: fit-content;
-        box-sizing: border-box;
-        // margin-right: 10px;
-        // margin-left: 10px;
-        margin: 10px;
+        width: 100%;
         background-color: #ffffff;
-        border-radius: 10px;
-        box-shadow: 2px 2px 5px rgb(187, 187, 187);
-        padding: 10px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        height: 50px;
+        border-bottom: 0.1px solid rgb(199, 199, 199);
+        border-right: 0.1px solid rgb(199, 199, 199);
+        border-left: 0.1px solid rgb(199, 199, 199);
+        // display: flex;
+        // justify-content: space-between;
+        // // width: 80%;
+        // min-width: 125px;
+        // min-height: 125px;
+        // height: fit-content;
+        // box-sizing: border-box;
+        // // margin-right: 10px;
+        // // margin-left: 10px;
+        // margin: 10px;
+        // background-color: #ffffff;
+        // border-radius: 10px;
+        // box-shadow: 2px 2px 5px rgb(187, 187, 187);
+        // padding: 10px;
         // margin: 5px;
         cursor: pointer;
     }
@@ -112,12 +130,11 @@ export default {
         flex-direction: column;
     }
 
-     .option-container{
+    .option-container{
         display: flex;
         flex-direction: column;
         align-items: flex-end;
-        top: 0;
-        right: 0;
+        padding-left: 5px;
 
         .option-btn{
             // background: #fff;
@@ -136,7 +153,6 @@ export default {
             padding: 5px;
             border-radius: 10px;
             box-shadow: 2px 2px 8px rgb(187, 187, 187);
-            margin-top: 3px;
 
             .dropdown-content{
                 display: flex;
@@ -156,10 +172,25 @@ export default {
     }
 
 
-    
+    .table-property{
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        // height: 35px;
+    }
 
-    .title{
-        font-size: 24px;
-        font-weight: 600;
+    #title{
+        display: flex;
+        flex-direction: row;
+        min-width: 200px;
+        padding-right: 26px
+    }
+
+    #start-date{
+        max-width: 175px;
+    }
+    #launching-date{
+        max-width: 175px;
     }
 </style>
