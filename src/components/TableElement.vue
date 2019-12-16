@@ -1,12 +1,14 @@
 <template>
 <div class="element" @click="Select">
-    <div class="option-container">
-        <div class="option-btn" v-if="isOption" @click="Option">
-        </div>
-        <div class="dropdown-container" v-show="dropdown">
-            <div class="dropdown-content">
-                <div class="dropdown-btn" @click="Update">수정</div>
-                <div class="dropdown-btn" @click="Delete">삭제</div>
+    <div class="option-container-container">
+        <div class="option-container">
+            <div class="option-btn" v-if="isOption" @click="Option">
+            </div>
+            <div class="dropdown-container" v-show="dropdown">
+                <div class="dropdown-content">
+                    <div class="dropdown-btn" @click="Update">수정</div>
+                    <div class="dropdown-btn" @click="Delete">삭제</div>
+                </div>
             </div>
         </div>
     </div>
@@ -20,6 +22,25 @@
     <div class="table-property" id="launching-date" v-if="launchingDate!=null">
         {{launchingDate}}
     </div>
+
+    <div class="table-property" id="sub-code" v-if="sub_code!=null">
+        {{sub_code}}
+    </div>
+    <div class="table-property" id="bom" v-if="bom!=null">
+        {{bom}}
+    </div>
+    <div class="table-property" id="demand-cap" v-if="demand_cap!=null">
+        {{demand_cap}}
+    </div>
+    <div class="table-property" id="indication-cap" v-if="indication_cap!=null">
+        {{indication_cap}}
+    </div>
+    <div class="table-property" id="real-cap" v-if="real_cap!=null">
+        {{real_cap}}
+    </div>
+    <div class="table-property" id="subconstractor" v-if="subconstractor!=null">
+        {{subconstractor}}
+    </div>
 </div>
 </template>
 
@@ -28,6 +49,10 @@ export default {
     props:{
         id: {
             type: Number,
+            default: null
+        },
+        isOption: {
+            type: Boolean,
             default: null
         },
         title: {
@@ -42,8 +67,28 @@ export default {
             type: String,
             default: null
         },
-        isOption: {
-            type: Boolean,
+        sub_code: {
+            type: String,
+            default: null
+        },
+        bom: {
+            type: String,
+            default: null
+        },
+        demand_cap: {
+            type: String,
+            default: null
+        },
+        indication_cap: {
+            type: String,
+            default: null
+        },
+        real_cap: {
+            type: String,
+            default: null
+        },
+        subconstractor: {
+            type: String,
             default: null
         }
     },
@@ -51,6 +96,10 @@ export default {
         return{
             dropdown: false
         }
+    },
+    mounted(){
+        console.log("table-mounted");
+        console.log(this.subconstractor);
     },
     methods:{
         Update(){
@@ -130,14 +179,22 @@ export default {
         flex-direction: column;
     }
 
+    .option-container-container{
+        position: relative;
+        top: -23%;
+        left: 10px;
+    }
+
     .option-container{
         display: flex;
         flex-direction: column;
         align-items: flex-end;
-        padding-left: 5px;
+        align-items: flex-end;
+        position: absolute;
+        // position: absolute;
+        // left:250px;
 
         .option-btn{
-            // background: #fff;
             background-image: url(../assets/images/option_btn.png);
             width: 20px;
             height: 20px;
@@ -149,7 +206,9 @@ export default {
         }
 
         .dropdown-container{
-            display: inline;
+            position: absolute;
+            top:22px;
+            left: 10%;
             padding: 5px;
             border-radius: 10px;
             box-shadow: 2px 2px 8px rgb(187, 187, 187);
@@ -177,14 +236,12 @@ export default {
         display: flex;
         align-items: center;
         justify-content: center;
-        // height: 35px;
     }
 
     #title{
         display: flex;
         flex-direction: row;
         min-width: 200px;
-        padding-right: 26px
     }
 
     #start-date{
@@ -192,5 +249,24 @@ export default {
     }
     #launching-date{
         max-width: 175px;
+    }
+    
+    #sub-code{
+        max-width: 100px;
+    }
+    #bom{
+        
+    }
+    #demand-cap{
+        max-width: 100px;
+    }
+    #indication-cap{
+        max-width: 100px;
+    }
+    #real-cap{
+        max-width: 100px;
+    }
+    #subconstractor{
+        max-width: 200px;
     }
 </style>

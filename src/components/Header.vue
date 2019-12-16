@@ -6,6 +6,9 @@
         <div class="item" v-show="screenNum==1">
             프로젝트
         </div>
+        <div class="item" v-show="screenNum==3">
+            부자재
+        </div>
     </div>
 </template>
 

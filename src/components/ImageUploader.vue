@@ -30,8 +30,16 @@ import toastr from 'vue-toastr'
 
 export default {
     props:{
-        projectID:String,
-        customerID:String
+        projectID:Number,
+        customerID:String,
+        kind:{//0 : Customers Photo, 1 : Project Timeline
+            type: Number,
+            default: null
+        },
+        photo:{
+            type: String,
+            default: null
+        }
     },
     data(){
         return{
@@ -45,22 +53,24 @@ export default {
     created(){
         console.log(this.projectID);
         console.log(this.customerID);
-        if(this.projectID != null){
-            axios.post('http://localhost:80/gettimeline', {id: this.projectID})
+        if(this.kind == 0){
+            console.log("getcustomerphoto");
+        }
+        else if(this.kind == 1){
+            axios.post('http://localhost:80/getimage', {id: this.projectID, type: 1})
             .then(res => {
                 this.images.push(res.data.data);
             }).catch(err => {
                 console.log(err);
             });
         }
-        // else if(this.customerID != null){
-        //     axios.post('http://localhost:80/getcustomerphoto', {id: this.customerID})
-        //     .then(res => {
-        //         this.images.push(res.data.data);
-        //     }).catch(err => {
-        //         console.log(err);
-        //     });
-        // }
+
+
+        console.log('this.photo')
+        console.log(this.photo)
+        if(this.photo != null){
+            this.images.push(this.photo);
+        }
     },
     methods:{
         OnDragEnter(e){
@@ -76,7 +86,7 @@ export default {
                 this.isDragging = false;
             }
         },
-        OnDrop(e){
+        OnDrop(e){//Drop Image
             console.log('drop');
             e.preventDefault();
             e.stopPropagation();
@@ -86,23 +96,31 @@ export default {
             const files = e.dataTransfer.files;
             console.log(files);
             this.file = files[0];
-            this.upload();
 
             if(files.length == 1){
                 Array.from(files).forEach(file => this.addImage(file));
+            }
+
+            if(this.kind == 0){
+                this.$emit("ImageTransfer", this.file);
+            }
+            else if(this.kind == 1){
+                this.upload();
             }
             
         },
         addImage(file){
             if(!file.type.match('image.*')){
-                this.$toastr.e('${file.name} is not an image');
+                alert('${file.name} is not an image');
                 return;
             }
 
             this.files.pop();
             this.files.push(file);
-            
-            const img = new Image();
+
+            console.log('file')
+            console.log(file)
+
             const reader = new FileReader();
 
             this.images.pop();
@@ -113,15 +131,18 @@ export default {
             // });
             reader.readAsDataURL(file);
         },
-        OnInputChange(e){
+        OnInputChange(e){//Select Image
             const files = e.target.files;
-            console.log(files);
-            console.log(files[0]);
-            console.log(this.$refs.file.files[0]);
             this.file = this.$refs.file.files[0];
-            this.upload();
 
             Array.from(files).forEach(file => this.addImage(file));
+
+            if(this.kind == 0){
+                this.$emit("ImageTransfer", this.file);
+            }
+            else if(this.kind == 1){
+                this.upload();
+            }
         },
         async upload(){
             var temp = this.file.slice(0, this.file.size, this.file.type);
@@ -222,17 +243,11 @@ export default {
         flex-wrap: wrap;
         height: fit-content;
         width: fit-content;
+        padding: 1px;
     }
 
     .img-wrapper{
-        // width: 500px;
-        // display: flex;
-        // flex-direction: column;
-        // margin: 10px;
-        // height: 500px;
-        justify-content: space-between;
         background: #fff;
-        // box-shadow: 5px 5px 5px rgb(187, 187, 187);
         border-radius: 10px;
         overflow: hidden;
 

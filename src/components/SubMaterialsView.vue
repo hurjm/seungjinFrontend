@@ -3,19 +3,19 @@
         <imageUploader class="timeline" :projectID=projectID />
         <div class="table">
             <div class="table-property-list">
-                <div class="table-property" id="code">
+                <div class="table-property" id="sub-code">
                     코드
                 </div>
                 <div class="table-property" id="bom">
                     BOM
                 </div>
-                <div class="table-property" id="demand-capacity">
+                <div class="table-property" id="demand-cap">
                     소요량
                 </div>
-                <div class="table-property" id="indication-capacity">
+                <div class="table-property" id="indication-cap">
                     표시용량
                 </div>
-                <div class="table-property" id="real-capacity">
+                <div class="table-property" id="real-cap">
                     실용량
                 </div>
                 <div class="table-property" id="subcontractor">
@@ -28,11 +28,14 @@
                     <table-element class="table-element" v-for="item in subMaterials" :key="item.id" 
                     @ShowModal="ShowModal" @Delete="Delete" @Select="Select" :isOption="true"
                     :id="item.id" 
-                    :title="item.title" 
-                    :startDate="item.start_date" 
-                    :launchingDate="item.launching_date"/>
+                    :sub_code="item.sub_code" 
+                    :bom="item.bom" 
+                    :demand_cap="item.demand_cap" 
+                    :real_cap="item.real_cap"
+                    :indication_cap="item.indication_cap"
+                    :subconstractor="item.subconstractor"/>
                 </draggable>
-                <div class="create-btn" @click="CreateBtn">+New Project</div>
+                <div class="create-btn" @click="CreateBtn">+New SubMaterials</div>
             </div>
         </div>
 
@@ -40,12 +43,13 @@
             
         <modal v-if="showModal" :data="modalData" @Create="Create" @Update="Update" @HideModal="HideModal"
         :isSubMaterials="true"
-        :code="modalData.code"
-        :BOM="modalData.BOM"
-        :demandCap="modalData.demandCap"
-        :indicationCap="modalData.indicationCap"
-        :realCap="modalData.realCap"
-        :subConstractor="modalData.subConstractor"
+        :mode="modalData.mode"
+        :sub_code="modalData.sub_code"
+        :bom="modalData.bom"
+        :demand_cap="modalData.demand_cap"
+        :indication_cap="modalData.indication_cap"
+        :real_cap="modalData.real_cap"
+        :subconstractor="modalData.subconstractor"
         />
     </div> 
 </template>
@@ -60,13 +64,15 @@ import fileUploader from "./FileUploader.vue"
 
 export default {
     props:{
-        projectID: Number
+        projectID: Number,
+        recipeID: {
+            type:Number,
+            default: 3
+        }
     },
     data(){
         return{
             subMaterials: [],
-            progress: [],
-            completed: [],
             showModal: false,
             modalData: []
         }
@@ -75,38 +81,28 @@ export default {
         this.GetList();
         console.log('mounted');
         console.log(this.projectID);
-        console.log(this.$test);
+        console.log(this.recipeID);
+        console.log(this.subMaterials);
     },
     watch:{
         subMaterials:function(){
             console.log('subMaterials');
             console.log(this.subMaterials);
-            this.UpdateState(0, this.subMaterials);
-        },
-        progress:function(){
-            console.log('progress');
-            console.log(this.progress);
-            this.UpdateState(1, this.progress);
-        },
-        completed:function(){
-            console.log('completed');
-            console.log(this.completed);
-            this.UpdateState(2, this.completed);
+            this.UpdateState(this.subMaterials);
         }
     },
     methods:{
-        UpdateState(state, list){
+        UpdateState(list){
             let updateList = [];
             list.forEach((data, index) => {
-                if(data.state != state || data.list_order != index){
-                    data.state = state;
+                if(data.list_order != index){
                     data.list_order = index;
                     updateList.push(data);
                 }
             });
 
             if(updateList.length > 0){
-                axios.post('http://localhost:80/updatesubmaterialstate', {state: state, data: updateList})
+                axios.post('http://localhost:80/updatesubmaterialorder', {data: updateList})
                 .then(res => {
                     console.log(res);
                 }).catch(err => {
@@ -116,16 +112,18 @@ export default {
         },
         Create(data){
             this.HideModal()
+            console.log("submaterials_modal_create");
+            console.log(data);
             var temp ={
+                recipe_id: this.recipeID,
                 list_order: this.subMaterials.length,
-                title: data.title, 
-                note: data.note,
-                project_id: this.projectID,
-                state: 0, 
-                startdate: Date.now(),
-                enddate: null
+                sub_code: data.sub_code, 
+                bom: data.bom, 
+                demand_cap: data.demand_cap, 
+                indication_cap: data.indication_cap, 
+                real_cap: data.real_cap, 
+                subconstractor: data.subconstractor
                 }
-                console.log("create");
             axios.post('http://localhost:80/createsubmaterial', temp)
             .then((res) => {
                 console.log(res);
@@ -140,28 +138,20 @@ export default {
         },
         Update(data){
             this.HideModal()
+            console.log("submaterials_modal_update");
+            console.log(data);
             axios.post('http://localhost:80/updatesubmaterial', data)
             .then((res) => {
                 console.log(res);
                 if(res.data.result == "success"){
                     this.subMaterials.forEach((project, index) => {
                         if(this.subMaterials[index].id == data.id){
-                            this.subMaterials[index].title = data.title;
-                            this.subMaterials[index].note = data.note;
-                            return;
-                        }
-                    });
-                    this.progress.forEach((project, index) => {
-                        if(this.progress[index].id == data.id){
-                            this.progress[index].title = data.title;
-                            this.progress[index].note = data.note;
-                            return;
-                        }
-                    });
-                    this.completed.forEach((project, index) => {
-                        if(this.completed[index].id == data.id){
-                            this.completed[index].title = data.title;
-                            this.completed[index].note = data.note;
+                            this.subMaterials[index].sub_code = data.sub_code;
+                            this.subMaterials[index].bom = data.bom;
+                            this.subMaterials[index].demand_cap = data.demand_cap;
+                            this.subMaterials[index].indication_cap = data.indication_cap;
+                            this.subMaterials[index].real_cap = data.real_cap;
+                            this.subMaterials[index].subconstractor = data.subconstractor;
                             return;
                         }
                     });
@@ -182,37 +172,17 @@ export default {
                             return;
                         }
                     });
-                    this.progress.forEach((project, index) => {
-                        if(this.progress[index].id == id){
-                            this.progress.splice(index, 1);
-                            return;
-                        }
-                    });
-                    this.completed.forEach((project, index) => {
-                        if(this.completed[index].id == id){
-                            this.completed.splice(index, 1);
-                            return;
-                        }
-                    });
                 }
             }).catch((err) => {
                 console.log(err);
             })
         },
         GetList(){
-            axios.post('http://localhost:80/getsubmaterials', {id : this.projectID})
+            axios.post('http://localhost:80/getsubmaterials', {id : this.recipeID})
             .then((res) => {
                 console.log(res)
                 for(var i=0; i<res.data.data.length; i++){
-                    if(res.data.data[i].state == 0){
-                        this.subMaterials.push(res.data.data[i]);
-                    }
-                    else if(res.data.data[i].state == 1){
-                        this.progress.push(res.data.data[i]);
-                    }
-                    else if(res.data.data[i].state == 2){
-                        this.completed.push(res.data.data[i]);
-                    }
+                    this.subMaterials.push(res.data.data[i]);
                 }
                 console.log(this.subMaterials)
             }).catch((err) => {
@@ -258,7 +228,8 @@ export default {
         text-align: center;
         width: 100%;
         margin-top: 7px;
-        padding: 10px;
+        padding-top:10px;
+        padding-bottom:10px;
         color: rgb(199, 199, 199);
         font-weight: 700;
         transition: color 0.25s;
@@ -290,7 +261,7 @@ export default {
         height: 35px;
     }
 
-    #code{
+    #sub-code{
         max-width: 100px;
         border-right: 0.1px solid rgb(199, 199, 199);
     }
@@ -299,15 +270,15 @@ export default {
         border-right: 0.1px solid rgb(199, 199, 199);
     }
     
-    #demand-capacity{
+    #demand-cap{
         max-width: 100px;
         border-right: 0.1px solid rgb(199, 199, 199);
     }
-    #indication-capacity{
+    #indication-cap{
         max-width: 100px;
         border-right: 0.1px solid rgb(199, 199, 199);
     }
-    #real-capacity{
+    #real-cap{
         max-width: 100px;
         border-right: 0.1px solid rgb(199, 199, 199);
     }

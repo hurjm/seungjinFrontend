@@ -1,14 +1,24 @@
 <template>
     <div>
         <div class="list">
-            <draggable class="drag-area" v-model="productionCodes" group="people" @start="drag=true" @end="drag=false">
-                <list-element class="list-element" v-for="item in this.customers" :key="item.id" 
-                @ShowModal="ShowModal" @Delete="Delete" @Select="Select" :id="item.id" :title="item.title" :note="item.note" :isOption="true"/>
+            <draggable class="drag-area" v-model="customers" group="customers" @start="drag=true" @end="drag=false">
+                <list-element class="list-element" v-for="item in customers" :key="item.id" 
+                @ShowModal="ShowModal" @Delete="Delete" @Select="Select" 
+                :isOption="true"
+                :id="item.id" 
+                :title="item.title"
+                :photo="item.photo"/>
             </draggable>
             <div class="create-btn" @click="CreateBtn"/>
         </div>
         
-        <modal v-if="showModal" :width="250" :height="125" :data="modalData" @Create="Create" @Update="Update" @HideModal="HideModal"/> 
+        <modal v-if="showModal" :width="250" :height="125" @Create="Create" @Update="Update" @HideModal="HideModal"
+        :isCustomers="true"
+        :mode="modalData.mode"
+        :id="modalData.id"
+        :title="modalData.title"
+        :photo="modalData.photo"
+        /> 
     </div>
 </template>
 
@@ -32,22 +42,89 @@ export default {
     created(){
         this.GetList()
     },
+    watch: {
+        customers:function(){
+            console.log('test')
+            this.UpdateOrder();
+        }
+    },
     methods: {
+        UpdateOrder(){
+            let updateList = [];
+            this.customers.forEach((item, index)=>{
+                if(item.list_order != index){
+                    item.list_order = index;
+                    updateList.push(item);
+                }
+            });
+
+            if(updateList.length > 0){
+                axios.post('http://localhost:80/updateprojectsorder', updateList)
+                .then((res) =>{
+                    console.log(res);
+                }).catch((err) => {
+                    console.log(err);
+                })
+            }
+            
+        },
         Select(id){
             console.log("cusView " + id);
             this.$emit('SelectCustomer', id);
         },
         Create(data){   
             this.HideModal();         
-            var temp ={
+            console.log("create");
+            console.log(data.photo);
+            let photo;
+            
+            console.log(photo);
+            let temp ={
                 title: data.title
-                }
+            }
 
-            axios.post('http://localhost:80/addcustomer', temp)
+            axios.post('http://localhost:80/createcustomer', temp)
             .then(res => {
                 console.log("add " + res.data.data);
                 temp.id = res.data.data;
-                this.customers.push(temp)
+
+                if(data.photo != null){
+                    let temp_img = data.photo.slice(0, data.photo.size, data.photo.type);
+                    data.photo = new File([temp_img], temp.id, {type: String(data.photo.type)});
+
+                    this.UploadPhoto(data.photo)
+                    .then(res=>{
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            temp.photo = e.target.result;
+                            this.customers.push(temp);
+                            };
+                        reader.readAsDataURL(data.photo);
+                    })
+                    .catch(err=>{
+                        console.log(err);
+                    })
+                    
+                    // const formData = new FormData();
+                    // formData.append('file', data.photo);
+
+                    // axios.post('http://localhost:80/uploadcustomerphoto', formData)
+                    // .then(res => {
+                    //     console.log(res);
+                    //     const reader = new FileReader();
+                    //     reader.onload = (e) => {
+                    //         temp.photo = e.target.result;
+                    //         this.customers.push(temp);
+                    //         };
+                    //     reader.readAsDataURL(data.photo);
+                    // })
+                    // .catch(err => {
+                    //     console.log(err);
+                    // })
+                }
+                else{
+                    this.customers.push(temp)
+                }
             }).catch(err => {
                 console.log(err)
             })
@@ -61,12 +138,51 @@ export default {
             .then(res => {
                 console.log(res);
                 if(res.data.result == "success"){
-                    this.customers.forEach((project, index) => {
-                        if(this.customers[index].id == data.id){
-                            this.customers.splice(index, 1, data);
-                            return;
+                    if(data.photo != null){
+                        let file
+                        console.log('data.photo')
+                        console.log(data.photo)
+                        console.log(typeof(data.photo))
+                        if(typeof(data.photo)=="string"){
+                            file = this.dataURLtoFile(data.photo, data.id);
                         }
-                    });
+                        else{
+                            let temp_img = data.photo.slice(0, data.photo.size, data.photo.type);
+                            console.log('temp_img')
+                            console.log(temp_img)
+                            file = new File([temp_img], data.id, {type: String(data.photo.type)});
+                            
+                        }
+                         
+                        console.log('file');
+                        console.log(file);
+                        this.UploadPhoto(file)
+                        .then(res=>{
+                            const reader = new FileReader();
+                            reader.onload = (e) => {
+                                data.photo = e.target.result;
+                                this.customers.forEach((project, index) => {
+                                    if(this.customers[index].id == data.id){
+                                        this.customers.splice(index, 1, data);
+                                        return;
+                                    }
+                                });
+                            };
+                            reader.readAsDataURL(file);
+                            
+                        })
+                        .catch(err=>{
+                            console.log("error");
+                        })
+                    }
+                    else{
+                        this.customers.forEach((project, index) => {
+                            if(this.customers[index].id == data.id){
+                                this.customers.splice(index, 1, data);
+                                return;
+                            }
+                        });
+                    }
                 }
             }).catch(err => {
                 console.log(err);
@@ -76,6 +192,7 @@ export default {
             console.log("del " + id);
             axios.post('http://localhost:80/deletecustomer', {id : id})
             .then(res => {
+                console.log("res");
                 console.log(res);
                 if(res.data.result == "success"){
                     this.customers.forEach((project, index) => {
@@ -93,12 +210,30 @@ export default {
             })
         },
         GetList(){
+            let temp_list = [];
             axios.get('http://localhost:80/getcustomers')
             .then(res => {
                 console.log(res);
-                for(var i=0; i<res.data.data.length; i++){
-                    this.customers.push(res.data.data[i])
-                }
+                temp_list = res.data.data;
+                // for(var i=0; i<res.data.data.length; i++){
+                //     this.customers.push(res.data.data[i])
+                // }
+                console.log('images');
+                axios.post('http://localhost:80/getimage', {type: 0})
+                .then(res => {
+                    console.log(res);
+                    temp_list.forEach(item => {
+                        res.data.data.forEach(data => {
+                            if(item.id == data.id){
+                                item.photo = data.file;
+                            }
+                        })
+                        this.customers.push(item);
+                    })
+                    console.log(this.customers);
+                }).catch(err => {
+                    console.log(err);
+                });
             }).catch(err => {
                 console.log(err)
             })
@@ -116,6 +251,36 @@ export default {
         CreateBtn(){
             console.log("createbtn");
             this.ShowModal({mode: 'create'});
+        },
+        dataURLtoFile(dataurl, filename) {
+            var arr = dataurl.split(','),
+                mime = arr[0].match(/:(.*?);/)[1],
+                bstr = atob(arr[1]), 
+                n = bstr.length, 
+                u8arr = new Uint8Array(n);
+                
+            while(n--){
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            
+            return new File([u8arr], filename, {type:mime});
+        },
+        UploadPhoto(photo){
+            console.log("UploadPhoto");
+            const formData = new FormData();
+            formData.append('file', photo);
+            console.log("formData");
+            console.log(formData);
+
+            return axios.post('http://localhost:80/uploadcustomerphoto', formData)
+            .then(res => {
+                console.log("res");
+                console.log(res);
+            })
+            .catch(err => {
+                console.log("err");
+                console.log(err);
+            })
         }
     },
     components:{

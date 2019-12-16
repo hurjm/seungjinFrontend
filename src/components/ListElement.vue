@@ -4,21 +4,18 @@
         <div class="title">
             {{title}}
         </div>
-        <div class="note" v-if="note != null">
-            {{note}}
-        </div>
-    </div>
-
-    <div class="option-container">
-        <div class="option-btn" v-if="isOption" @click="Option">
-        </div>
-        <div class="dropdown-container" v-show="dropdown">
-            <div class="dropdown-content">
-                <div class="dropdown-btn" @click="Update">수정</div>
-                <div class="dropdown-btn" @click="Delete">삭제</div>
+        <div class="option-container">
+            <div class="option-btn" v-if="isOption" @click="Option">
+            </div>
+            <div class="dropdown-container" v-show="dropdown">
+                <div class="dropdown-content">
+                    <div class="dropdown-btn" @click="Update">수정</div>
+                    <div class="dropdown-btn" @click="Delete">삭제</div>
+                </div>
             </div>
         </div>
     </div>
+    <img class="photo" :src="photo" v-if="photo!=null">
 </div>
 </template>
 
@@ -37,6 +34,10 @@ export default {
             type: String,
             default: null
         },
+        photo: {
+            type: String,
+            default: null
+        },
         isOption: {
             type: Boolean,
             default: null
@@ -47,10 +48,14 @@ export default {
             dropdown: false
         }
     },
+    created(){
+        console.log(this.id);
+        console.log(this.photo);
+    },
     methods:{
         Update(){
             console.log("Update");
-            this.$emit("ShowModal", {id: this.id, title: this.title, note: this.note, mode: "update"});
+            this.$emit("ShowModal", {id: this.id, title: this.title, note: this.note, photo: this.photo, mode: "update"});
             this.ChangeDropDown();
             console.log("Update");
         },
@@ -86,6 +91,7 @@ export default {
 <style lang="scss" scoped>
     .element{
         display: flex;
+        flex-direction: column;
         justify-content: space-between;
         // width: 80%;
         min-width: 125px;
@@ -108,16 +114,22 @@ export default {
     }
 
     .content-container{
-        display: inline-flex;
-        flex-direction: column;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .title{
+        font-size: 24px;
+        font-weight: 600;
     }
 
-     .option-container{
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        top: 0;
-        right: 0;
+    .option-container{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    position: relative  ;
+    right: 0;
 
         .option-btn{
             // background: #fff;
@@ -132,7 +144,8 @@ export default {
         }
 
         .dropdown-container{
-            display: inline;
+            position: absolute;
+            top:22px;
             padding: 5px;
             border-radius: 10px;
             box-shadow: 2px 2px 8px rgb(187, 187, 187);
@@ -156,10 +169,8 @@ export default {
     }
 
 
-    
-
-    .title{
-        font-size: 24px;
-        font-weight: 600;
+    .photo{
+        width: 250px;
+        height: 250px;
     }
 </style>

@@ -137,7 +137,7 @@ export default {
         background-color: #232e3d;
         display: flex;
         flex-direction: column;
-        // bottom: 0;
+        z-index: 1;
         align-items: center;
     }
 

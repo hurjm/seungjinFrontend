@@ -64,8 +64,14 @@ export default {
 
     * {
         user-select: none;
-    }   
+    } 
 
+    input:focus{
+        outline: none;
+    }
+    textarea:focus{
+        outline: none;
+    }
     .home-container{
         display: flex;
         flex-direction: column;

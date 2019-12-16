@@ -25,7 +25,7 @@
             </div>
         </div>
         <modal v-if="showModal" :width="250" :height="125" @Create="Create" @Update="Update" @HideModal="HideModal"
-        :isProject="true"
+        :isProjects="true"
         :id="modalData.id"
         :title="modalData.title"
         :startDate="modalData.startDate"
