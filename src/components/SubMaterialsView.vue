@@ -42,7 +42,7 @@
         <fileUploader class="file-uploader" :projectID=projectID />   
             
         <modal v-if="showModal" :data="modalData" @Create="Create" @Update="Update" @HideModal="HideModal"
-        :isSubMaterials="true"
+        :kind="3"
         :mode="modalData.mode"
         :sub_code="modalData.sub_code"
         :bom="modalData.bom"

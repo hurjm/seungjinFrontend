@@ -5,6 +5,7 @@
                 <list-element class="list-element" v-for="item in customers" :key="item.id" 
                 @ShowModal="ShowModal" @Delete="Delete" @Select="Select" 
                 :isOption="true"
+                :kind="0"
                 :id="item.id" 
                 :title="item.title"
                 :photo="item.photo"/>
@@ -13,7 +14,7 @@
         </div>
         
         <modal v-if="showModal" :width="250" :height="125" @Create="Create" @Update="Update" @HideModal="HideModal"
-        :isCustomers="true"
+        :kind="0"
         :mode="modalData.mode"
         :id="modalData.id"
         :title="modalData.title"
@@ -59,7 +60,7 @@ export default {
             });
 
             if(updateList.length > 0){
-                axios.post('http://localhost:80/updateprojectsorder', updateList)
+                axios.post('http://localhost:80/updatecustomersorder', updateList)
                 .then((res) =>{
                     console.log(res);
                 }).catch((err) => {
@@ -68,9 +69,9 @@ export default {
             }
             
         },
-        Select(id){
-            console.log("cusView " + id);
-            this.$emit('SelectCustomer', id);
+        Select(data){
+            console.log("cusView " + data.id);
+            this.$emit('SelectCustomer', data.id);
         },
         Create(data){   
             this.HideModal();         
@@ -301,9 +302,6 @@ export default {
         margin: 10px;
         padding: 10px;
         box-sizing: border-box;
-        // width: fit-content;
-        // margin-top: 7px;
-        // padding: 10px;
         color: #ffffff;
         font-weight: 700;
         transition: color 0.25s;
@@ -316,8 +314,8 @@ export default {
     }
 
     .list-element{
-        min-width: 250px;
-        min-height: 250px;
+        // min-width: 250px;
+        // min-height: 250px;
     }
 
     .list{

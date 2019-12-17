@@ -25,7 +25,7 @@
             </div>
         </div>
         <modal v-if="showModal" :width="250" :height="125" @Create="Create" @Update="Update" @HideModal="HideModal"
-        :isProjects="true"
+        :kind="1"
         :id="modalData.id"
         :title="modalData.title"
         :startDate="modalData.startDate"
@@ -70,6 +70,7 @@ export default {
             this.projects.forEach((project, index)=>{
                 if(project.list_order != index){
                     project.list_order = index;
+                    console.log(project);
                     updateList.push(project);
                 }
             });
@@ -111,17 +112,20 @@ export default {
         },
         Update(data){
             this.HideModal();
-            console.log('testtest1111')
+            console.log('UpdateProject')
             console.log(data);
             axios.post('http://localhost:80/updateproject', data)
             .then((res) => {
                 console.log(res);
                 if(res.data.result == "success"){
+                    console.log('success');
                     this.projects.forEach((project, index) => {
-                        if(this.projects[index].id == data.id){
-                            this.projects[index].title = data.title;
-                            this.projects[index].start_date = data.startDate;
-                            this.projects[index].launching_date = data.launchingDate;
+                        if(project.id == data.id){
+                            console.log(project);
+                            console.log(data);
+                            project.title = data.title;
+                            project.start_date = data.startDate;
+                            project.launching_date = data.launchingDate;
                             return;
                         }
                     });

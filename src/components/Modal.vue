@@ -1,31 +1,12 @@
 <template>
     <div class="modal-background" v-show="isShow">
         <div :class="['modal-container modal-container-' + type] ">
-        <!-- <div class="modal-container"> -->
-            <div class="customers" v-if="isCustomers">
+            <div class="customers" v-if="kind==0">
                 <input class="title" v-model="title" placeholder="고객사 이름">
                 <imageUploader class="image" :photo="photo" :kind="0" :customerID=id @ImageTransfer="ImageTransfer"></imageUploader>
             </div>
 
-            <div class="recipes" v-if="isRecipes">
-                <input class="title" v-model="title" placeholder="처방 이름">
-            
-                <ResizeAuto>
-                    <template v-slot:default="{resize}">
-                        <textarea class="note" v-model="note" @input="resize" placeholder="NOTE"/>
-                    </template>
-                </ResizeAuto>
-            </div>
-
-            <div class="subMaterials" v-if="isSubMaterials">
-                <input type="text" v-model="sub_code" placeholder="코드">
-                <input type="text" v-model="bom" placeholder="bom">
-                <input type="text" v-model="demand_cap" placeholder="소요량">
-                <input type="text" v-model="indication_cap" placeholder="표시용량">
-                <input type="text" v-model="real_cap" placeholder="실용량">
-                <input type="text" v-model="subconstractor" placeholder="협력업체">
-            </div>
-            <div v-if="isProjects">
+            <div v-if="kind==1">
                 <input class="title" v-model="title" placeholder="프로젝트 이름">
                 <div class="datepicker-container">
                     <div class="datepicker-element">
@@ -42,6 +23,25 @@
                     </div>
                 </div>
             </div>
+
+            <div class="recipes" v-if="kind==2">
+                <input class="title" v-model="title" placeholder="처방 이름">
+            
+                <ResizeAuto>
+                    <template v-slot:default="{resize}">
+                        <textarea class="note" v-model="note" @input="resize" placeholder="NOTE"/>
+                    </template>
+                </ResizeAuto>
+            </div>
+
+            <div class="subMaterials" v-if="kind==3">
+                <input type="text" v-model="sub_code" placeholder="코드">
+                <input type="text" v-model="bom" placeholder="bom">
+                <input type="text" v-model="demand_cap" placeholder="소요량">
+                <input type="text" v-model="indication_cap" placeholder="표시용량">
+                <input type="text" v-model="real_cap" placeholder="실용량">
+                <input type="text" v-model="subconstractor" placeholder="협력업체">
+            </div>
             <div class="button-container">
                 <span class="button" @click="Confirm">확인</span>
                 <span class="button" @click="Cancel">취소</span>
@@ -57,29 +57,9 @@ import Datepicker from 'vuejs-datepicker';
 import imageUploader from "./ImageUploader.vue";
 export default {
     props:{
-        isCustomers:{
-            type: Boolean,
-            default: false
-        },
-        isProjects:{
-            type: Boolean,
-            default: false
-        },
-        isRecipes:{
-            type: Boolean,
-            default: false
-        },
-        isSubMaterials:{
-            type: Boolean,
-            default: false
-        },
-        width:{
+        kind:{// 0 : customers, 1 : projects, 2 : recipes, 3 : submarterials
             type: Number,
-            default: 200
-        },
-        height:{
-            type: Number,
-            default: 200
+            default: null
         },
         isShow: {
             type: Boolean,
@@ -149,18 +129,18 @@ export default {
     },
     mounted(){
         console.log('mounted');
-        console.log(this.startDate);
+        console.log(this.mode);
         this.isShow = true;
-        if(this.isCustomers){
+        if(this.kind == 0){
             this.type = "customers";
         }
-        else if(this.isProjects){
+        else if(this.kind == 1){
             this.type = "projects";
         }
-        else if(this.isRecipes){
+        else if(this.kind == 2){
             this.type = "recipes";
         }
-        else if(this.isSubMaterials){
+        else if(this.kind == 3){
             this.type = "submaterials";
         }
     },
@@ -175,14 +155,14 @@ export default {
             console.log('confirm');
             if(this.mode == "create"){
                 console.log("create");
-                if(this.isCustomers){
+                if(this.kind == 0){
                     console.log("customers_modal_update");
                     this.$emit('Create', {
                         title: this.title,
                         photo: this.photo
                         });
                 }
-                else if(this.isProjects){
+                else if(this.kind == 1){
                     let startDate = document.getElementById("start-datepicker").value;
                     let launchingDate = document.getElementById("launching-datepicker").value;
                     this.$emit('Create', {
@@ -190,7 +170,7 @@ export default {
                         startDate: startDate, 
                         launchingDate: launchingDate});
                 }
-                else if(this.isRecipes){
+                else if(this.kind == 2){
                     console.log("recipes_modal_create");
                     this.$emit('Create', {
                         title: this.title, 
@@ -198,7 +178,7 @@ export default {
                         state: this.state
                         });
                 }
-                else if(this.isSubMaterials){
+                else if(this.kind == 3){
                     console.log("submaterials_modal_create");
                     this.$emit('Create', {
                         sub_code: this.sub_code, 
@@ -210,7 +190,7 @@ export default {
                 }
             }
             else if(this.mode == "update"){
-                if(this.isCustomers){
+                if(this.kind == 0){
                     console.log("customers_modal_update");
                     this.$emit('Update', {
                         id: this.id, 
@@ -218,7 +198,8 @@ export default {
                         photo: this.photo
                         });
                 }
-                else if(this.isProjects){
+                else if(this.kind == 1){
+                    console.log('updateproject');
                     let startDate = document.getElementById("start-datepicker").value;
                     let launchingDate = document.getElementById("launching-datepicker").value;
                     this.$emit('Update', {
@@ -227,14 +208,14 @@ export default {
                         startDate: startDate, 
                         launchingDate: launchingDate});
                 }
-                else if(this.isRecipes){
+                else if(this.kind == 2){
                     console.log("recipes_modal_update");
                     this.$emit('Update', {
                         id: this.id, 
                         title: this.title, 
                         note: this.note});
                 }
-                if(this.isSubMaterials){
+                if(this.kind == 3){
                     console.log("submaterials_modal_update");
                     this.$emit('Update', {
                         id: this.id, 
@@ -244,12 +225,6 @@ export default {
                         indication_cap: this.indication_cap, 
                         real_cap: this.real_cap, 
                         subconstractor: this.subconstractor});
-                }
-                else{
-                    this.$emit('Update', {
-                        id: this.id, 
-                        title: this.title, 
-                        note: this.note});
                 }
             }
         },

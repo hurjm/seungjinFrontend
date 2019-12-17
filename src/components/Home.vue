@@ -64,11 +64,21 @@ export default {
 
     * {
         user-select: none;
+        font-size: 12px;
     } 
+
+    input{
+        font-family: 'NanumBarunGothic', sans-serif;
+    }
 
     input:focus{
         outline: none;
     }
+
+    textarea{
+        font-family: 'NanumBarunGothic', sans-serif;
+    }
+
     textarea:focus{
         outline: none;
     }

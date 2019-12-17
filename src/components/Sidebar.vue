@@ -1,7 +1,7 @@
 <template>
     <div class="sidebar-container">
         <div class="head">
-            <img src="../assets/images/logo.gif" alt="sorry;"/>
+            <img src="../assets/images/logo.png" alt="sorry;"/>
         </div>
         <div class="item-list">
             <div class="item" @click="SelectScreen">

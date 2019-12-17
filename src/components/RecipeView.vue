@@ -10,7 +10,8 @@
                     <div class="list">
                         <draggable class="drag-area" v-model="suggested" group="suggested" @start="drag=true" @end="drag=false">
                             <list-element v-for="item in suggested" :key="item.id" 
-                            @ShowModal="ShowModal" @Delete="Delete" 
+                            @ShowModal="ShowModal" @Delete="Delete" @Select="Select"
+                            :kind="2"
                             :id="item.id" 
                             :title="item.title" 
                             :note="item.note" :isOption="true"/>
@@ -25,7 +26,8 @@
                     <div class="list">
                         <draggable class="drag-area" v-model="progress" group="progress" @start="drag=true" @end="drag=false">
                             <list-element v-for="item in progress" :key="item.id" 
-                            @ShowModal="ShowModal" @Delete="Delete" 
+                            @ShowModal="ShowModal" @Delete="Delete" @Select="Select"
+                            :kind="2"
                             :id="item.id" 
                             :title="item.title" 
                             :note="item.note" :isOption="true"/>
@@ -40,7 +42,8 @@
                     <div class="list">
                         <draggable class="drag-area" v-model="completed" group="completed" @start="drag=true" @end="drag=false">
                             <list-element v-for="item in completed" :key="item.id" 
-                            @ShowModal="ShowModal" @Delete="Delete" 
+                            @ShowModal="ShowModal" @Delete="Delete" @Select="Select"
+                            :kind="2"
                             :id="item.id" 
                             :title="item.title" 
                             :note="item.note" :isOption="true"/>
@@ -51,13 +54,19 @@
             </div>
         </div>
         
-        
         <modal v-if="showModal" @Create="Create" @Update="Update" @HideModal="HideModal"
-        :isRecipes="true"
+        :kind="2"
         :mode="modalData.mode"
+        :id="modalData.id"
         :title="modalData.title"
         :note="modalData.title"
         :state="modalData.state"
+        />
+
+        <modalRecipe v-if="showRecipe" @Update="Update" @Delete="Delete" @HideModal="HideModal"
+        :id="modalData.id"
+        :title="modalData.title"
+        :note="modalData.note"
         />
     </div>           
 </template>
@@ -68,7 +77,7 @@ import listElement from "./ListElement.vue";
 import modal from "./Modal.vue";
 import draggable from 'vuedraggable';
 import imageUploader from "./ImageUploader.vue"
-
+import modalRecipe from "./ModalRecipe.vue"
 
 export default {
     props:{
@@ -80,6 +89,7 @@ export default {
             progress: [],
             completed: [],
             showModal: false,
+            showRecipe: false,
             modalData: []
         }
     },
@@ -166,6 +176,9 @@ export default {
         },
         Update(data){
             this.HideModal();
+            console.log('updaterecipe');
+            console.log(this.suggested);
+            console.log(data);
             axios.post('http://localhost:80/updaterecipe', data)
             .then((res) => {
                 console.log(res);
@@ -197,6 +210,7 @@ export default {
             })
         },
         Delete(id){
+            this.HideModal();
             console.log("delete");
             axios.post('http://localhost:80/deleterecipe', {id : id})
             .then((res) => {
@@ -248,6 +262,7 @@ export default {
         HideModal(){
             console.log("hide")
             this.showModal = false;
+            this.showRecipe = false;
         },
         ShowModal(data){
             console.log(data);
@@ -258,13 +273,19 @@ export default {
             console.log("createbtn");
             console.log(e.target.id);
             this.ShowModal({state:e.target.id, mode: 'create'});
+        },
+        Select(data){
+            console.log('Select' + " " + data);
+            this.modalData = data;
+            this.showRecipe = true;
         }
     },
     components:{
         imageUploader,
         listElement,
         modal,
-        draggable
+        draggable,
+        modalRecipe
     }
 }
 </script>

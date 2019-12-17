@@ -197,7 +197,7 @@ export default {
         // border-radius: 10px;
         // box-shadow: 2px 2px 5px rgb(187, 187, 187);
         width: 100%;
-        min-width: 500px;
+        min-width: 300px;
         color: #000000;
         border: 0.1px solid rgb(199, 199, 199);
         

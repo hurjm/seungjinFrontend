@@ -1,10 +1,11 @@
 <template>
-<div class="element" @click="Select">
+<div :class="['element element-' + type]" @click="Select">
     <div class="content-container">
         <div class="title">
             {{title}}
         </div>
-        <div class="option-container">
+
+        <div class="option-container" v-if="kind!=2">
             <div class="option-btn" v-if="isOption" @click="Option">
             </div>
             <div class="dropdown-container" v-show="dropdown">
@@ -22,6 +23,10 @@
 <script>
 export default {
     props:{
+        kind: {
+            type: Number,
+            default: null
+        },
         id: {
             type: Number,
             default: null
@@ -45,12 +50,21 @@ export default {
     },
     data(){
         return{
-            dropdown: false
+            dropdown: false,
+            type: null
         }
     },
-    created(){
+    mounted(){
+        console.log('mounted');
         console.log(this.id);
         console.log(this.photo);
+        console.log(this.kind);
+        if(this.kind == 0){
+            this.type = "customers";
+        }
+        else if(this.kind == 2){
+            this.type = "recipes";
+        }
     },
     methods:{
         Update(){
@@ -69,7 +83,11 @@ export default {
         },
         Select(){
             if(!this.dropdown){
-                this.$emit('Select', this.id)
+                this.$emit('Select', {
+                    id: this.id,
+                    title: this.title,
+                    note: this.note
+                });
             }
             console.log("Select " + this.id)
         },
@@ -83,7 +101,6 @@ export default {
                 this.dropdown = true;
             }
         }
-
     }
 }
 </script>
@@ -93,20 +110,26 @@ export default {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        // width: 80%;
-        min-width: 125px;
-        min-height: 125px;
-        height: fit-content;
         box-sizing: border-box;
-        // margin-right: 10px;
-        // margin-left: 10px;
-        margin: 10px;
         background-color: #ffffff;
         border-radius: 10px;
         box-shadow: 2px 2px 5px rgb(187, 187, 187);
         padding: 10px;
-        // margin: 5px;
         cursor: pointer;
+
+        &-customers{
+            width: 100px;
+            height: 100px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        &-recipes{
+            width: 100%;
+            height: fit-content;
+            margin-bottom: 10px;
+            margin-top: 10px;
+        }
     }
 
     .element:hover{
@@ -120,7 +143,6 @@ export default {
     }
     
     .title{
-        font-size: 24px;
         font-weight: 600;
     }
 
@@ -170,7 +192,7 @@ export default {
 
 
     .photo{
-        width: 250px;
-        height: 250px;
+        width: 75%;
+        height: 75%;
     }
 </style>
