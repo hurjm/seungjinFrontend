@@ -1,13 +1,36 @@
 <template>
     <div class="home-container">
         <headbar class="headbar" :screenNum="screen"/>
-        <sidebar class="sidebar" :screenNum="screen" @SelectScreen="SelectScreen"></sidebar>
+        <sidebar class="sidebar"
+        :customerName="customerName" 
+        :projectName="projectName"
+        :projectList="projectList"
+        :recipeList="recipeList"
+        @SelectScreen="SelectScreen"
+        @SelectProject="SelectProject"
+        @SelectRecipe="SelectRecipe"/>
         <div class="page-wrap">
-            <customerView v-if="screen==0" @SelectCustomer='SelectCustomer'></customerView>
-            <projectView v-if="screen==1" @SelectProject='SelectProject' :customerID=customerID></projectView>
-            <recipeView v-if="screen==2" :projectID=projectID></recipeView>
-            <subMaterialsView v-if="screen==3" :projectID=projectID></subMaterialsView>
-            <productionView v-if="screen==4" :projectID=projectID></productionView>
+            <customerView v-if="screen==0" 
+            @SelectCustomer='SelectCustomer'
+            />
+            <projectView v-if="screen==1" 
+            :customerID="customerID"
+            @SelectProject='SelectProject' 
+            @SendSideBarData='SendSideBarData'
+            />
+            <recipeView v-if="screen==2" 
+            :key="projectID"
+            :projectID="projectID" 
+            @SendSideBarData="SendSideBarData"
+            />
+            <subMaterialsView v-if="screen==3" 
+            :key="recipeID"
+            :projectID="projectID" 
+            :recipeID="recipeID"
+            />
+            <productionView v-if="screen==4" 
+            :projectID="projectID"
+            />
         </div>
     </div>
 </template>
@@ -26,25 +49,59 @@ export default {
     name: 'Home',
     data(){
         return{
-            screen: this.$screen,
-            customerID: null,
-            projectID: null
+            screen: 0,
+            customerID: {
+                type: Number,
+                default: null
+            },
+            customerName:null,
+            projectName:null,
+            projectList:null,
+            recipeList:null,
+            projectID: {
+                type: Number,
+                default: null
+            },
+            recipeID: null
         }
     },
     methods: {
         SelectScreen(num){
             this.screen = num;
         },
-        SelectCustomer(id){
-            this.customerID = id;
+        SelectCustomer(data){
+            this.customerID = data.id;
+            this.customerName = data.title;
+            this.projectID = null;
+            this.recipeID = null;
+            this.projectList = null;
+            this.recipeList = null;
+            this.projectName = null;
             console.log("home cus " + this.customerID);
             this.screen = 1;
         },
-        SelectProject(id){
-            this.projectID = id;
+        SelectProject(data){
+            this.projectID = data.id;
+            this.projectName = data.title;
             this.screen = 2;
+        },
+        SelectRecipe(data){
+            console.log("SelectRecipe");
+            console.log(data);
+            this.recipeID = data.id;
+            this.screen = 3;
+        },
+        SendSideBarData(data){
+            console.log('SendSideBarData')
+            console.log(data)
+            if(data.index == 1){
+                this.projectList = data.list;
+            }
+            else if(data.index == 3){
+                this.recipeList = data.list;
+                console.log(this.recipeList);
+            }
         }
-
     },
     components:{
         headbar,

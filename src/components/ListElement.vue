@@ -6,8 +6,7 @@
         </div>
 
         <div class="option-container" v-if="kind!=2">
-            <div class="option-btn" v-if="isOption" @click="Option">
-            </div>
+            <img class="option-btn" src="../assets/images/list_option_btn.png" v-if="isOption" @click="Option"/>
             <div class="dropdown-container" v-show="dropdown">
                 <div class="dropdown-content">
                     <div class="dropdown-btn" @click="Update">수정</div>
@@ -56,9 +55,9 @@ export default {
     },
     mounted(){
         console.log('mounted');
-        console.log(this.id);
-        console.log(this.photo);
-        console.log(this.kind);
+        // console.log(this.id);
+        // console.log(this.photo);
+        // console.log(this.kind);
         if(this.kind == 0){
             this.type = "customers";
         }
@@ -155,9 +154,9 @@ export default {
 
         .option-btn{
             // background: #fff;
-            background-image: url(../assets/images/option_btn.png);
-            width: 20px;
-            height: 20px;
+            // background-image: url(../assets/images/list_option_btn.png);
+            width: 10px;
+            height: 13px;
             cursor: pointer;
         }
 

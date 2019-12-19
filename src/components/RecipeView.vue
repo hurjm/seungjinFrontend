@@ -1,11 +1,11 @@
 <template>
     <div class="main-container">
-        <imageUploader class="timeline" :projectID=projectID></imageUploader>
+        <imageUploader class="timeline" :kind="1" :projectID=projectID></imageUploader>
         <div class="element-container">
             <div class="state-container">
                 <div class="list-container">
                     <div class="list-name">
-                        제안
+                        카테고리
                     </div>
                     <div class="list">
                         <draggable class="drag-area" v-model="suggested" group="suggested" @start="drag=true" @end="drag=false">
@@ -81,7 +81,10 @@ import modalRecipe from "./ModalRecipe.vue"
 
 export default {
     props:{
-        projectID: Number
+        projectID: {
+            type: Number,
+            default: null
+        }
     },
     data(){
         return{
@@ -95,6 +98,7 @@ export default {
     },
     mounted(){
         this.GetRecipes();
+        this.SendSideBarData();
     },
     watch:{
         suggested:function(){
@@ -278,6 +282,10 @@ export default {
             console.log('Select' + " " + data);
             this.modalData = data;
             this.showRecipe = true;
+        },
+        SendSideBarData(){
+            console.log('SendSideBarData')
+            this.$emit('SendSideBarData', {index: 3, list: this.suggested});
         }
     },
     components:{

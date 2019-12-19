@@ -8,126 +8,107 @@
                 <div class="item-name" id="0">
                     고객사  
                 </div>
-                <div class="item-content-container">
-                    <div class="item-content-list">
-                        <div class="item-content">
-                            test
-                        </div>
-                        <div class="item-content">
-                            test
-                        </div>
-                    </div>
-                </div>
             </div>
             
-            <div class="item" @click="SelectScreen">
-                <div class="item-name" id="1">
-                    프로젝트
+            <div class="item">
+                <div class="item-name" id="1" @click="SelectScreen">
+                    프로젝트 
+                    <span v-show="customerName != null" id="1">{{'(' + customerName + ')'}}</span>
                 </div>
                 <div class="item-content-container">
-                    <div class="item-content-list">
-                        <div class="item-content">
-                            test
-                        </div>
-                        <div class="item-content">
-                            test
-                        </div>
+                    <div class="item-content-list" v-if="projectList!=null">
+                        <sidebarItem class="item-content" :id="['project' + item.id]" v-for="item in projectList" :key="item.id"
+                        @Select="SelectProject"
+                        :itemId="item.id"
+                        :title="item.title"
+                        />
                     </div>
                 </div>
             </div>
-
 
             <div class="item" @click="SelectScreen">
                 <div class="item-name" id="2">
                     처방
-                </div>
-                <div class="item-content-container">
-                    <div class="item-content-list">
-                        <div class="item-content">
-                            test
-                        </div>
-                        <div class="item-content">
-                            test
-                        </div>
-                    </div>
+                    <span v-show="projectName != null" id="2">{{'(' + projectName + ')'}}</span>
                 </div>
             </div>
-            <div class="item" @click="SelectScreen">
-                <div class="item-name" id="3">
+            <div class="item">
+                <div class="item-name-not" id="3">
                     부자재
                 </div>
                 <div class="item-content-container">
-                    <div class="item-content-list">
-                        <div class="item-content">
-                            test
-                        </div>
-                        <div class="item-content">
-                            test
-                        </div>
+                    <div class="item-content-list" v-if="recipeList!=null">
+                        <sidebarItem class="item-content" :id="['recipe' + item.id]" v-for="item in recipeList" :key="item.id"
+                        @Select="SelectRecipe"
+                        :itemId="item.id"
+                        :title="item.title"
+                        />
                     </div>
                 </div>
             </div>
-            <div class="item" @click="SelectScreen">
+            <!-- <div class="item" @click="SelectScreen">
                 <div class="item-name" id="4">
                     생산
                 </div>
-                <div class="item-content-container">
-                    <div class="item-content-list">
-                        <div class="item-content">
-                            test
-                        </div>
-                        <div class="item-content">
-                            test
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- <div class="item" v-show="screenNum > 1" @click="SelectScreen" id="2">
-                처방
-            </div>
-            <div class="item" v-show="screenNum > 1" @click="SelectScreen" id="3">
-                부자재
-            </div>
-            <div class="item" v-show="screenNum > 1" @click="SelectScreen" id="4">
-                생산
             </div> -->
         </div>
     </div>
 </template>
 
 <script>
+import sidebarItem from './SidebarItem.vue';
 export default {
     props:{
-        screenNum:Number
+        customerName: null,
+        projectName: null,
+        projectList:null,
+        recipeList:null
     },
-    // data(){
-    //     return{
-    //         screen: this.screenNum
-    //     }
-    // },
-    // watch: {
-    //     screenNum: function(screenNum){
-    //         this.screen = screenNum;
-    //         console.log("screenNum " + screenNum);
-    //     }
-    // },
+    data(){
+        return{
+            clicked:null
+        }
+    },
+    mounted(){
+        console.log('mounted')
+        console.log(this.recipeList)
+    },
     methods:{
         SelectScreen(e){
             console.log('SelectScreen');
             console.log(e.target.id);
-            //item dropdown
-            if(e.target.nextSibling.childNodes[0].style.marginTop != '0px'){
-                e.target.nextSibling.childNodes[0].style.marginTop = '0';
-            }
-            else{
-                e.target.nextSibling.childNodes[0].style.marginTop = '-100%';
-            }
+            this.SetClicked(e.target);
             this.$emit("SelectScreen", e.target.id);
+            // if(e.target.nextSibling.childNodes[0].style.marginTop != '0px'){
+            //     e.target.nextSibling.childNodes[0].style.marginTop = '0';
+            // }
+            // else{
+            //     e.target.nextSibling.childNodes[0].style.marginTop = '-100%';
+            // }
         },
         Dropdown(){
             console.log('dropdown');
+        },
+        SelectProject(data){
+            this.SetClicked(data.e.target.parentNode);
+            this.$emit("SelectProject", data);
+        },
+        SelectRecipe(data){
+            this.SetClicked(data.e.target.parentNode);
+            this.$emit("SelectRecipe", {id: data.id});
+        },
+        SetClicked(target){
+            console.log("SetClicked");
+            console.log(target);
+            if(this.clicked!=null){
+                this.clicked.style.backgroundColor = "";
+            }
+            this.clicked = target;
+            this.clicked.style.backgroundColor = "#506d91";
         }
+    },
+    components:{
+        sidebarItem
     }
 }
 </script>
@@ -160,26 +141,18 @@ export default {
         font-weight: 300;
     }
 
-    input[type=checkbox]{
-        display: none;
-    }
-
-    input:checked + label .item{
-            margin-top: 0;
-        .item-content-container{
-            .item-content-list{
-            margin-top: 0;
-
-            }
-        }
-    }
-
     .item{
         cursor: pointer;
     }
+
     .item-name{
         padding: 5px 20px;
         transition: background-color 0.1s linear;
+
+        &-not{
+            padding: 5px 20px;
+            cursor: default;
+        }
     }
 
     .item-name:hover {
@@ -193,8 +166,8 @@ export default {
 
     .item-content-list{
         width: 100%;
-        margin-top:-100%;
-        transition: margin-top 0.125s ease;
+        // margin-top:-100%;
+        // transition: margin-top 0.125s ease;
     }
 
     .item-content{

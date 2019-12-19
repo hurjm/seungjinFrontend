@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <imageUploader class="timeline" :projectID=projectID />
+        <imageUploader class="timeline" :kind="1" :projectID=projectID />
         <div class="table">
             <div class="table-property-list">
                 <div class="table-property" id="sub-code">
@@ -27,6 +27,7 @@
                 <draggable class="drag-area" v-model="subMaterials" group="subMaterials" @start="drag=true" @end="drag=false">
                     <table-element class="table-element" v-for="item in subMaterials" :key="item.id" 
                     @ShowModal="ShowModal" @Delete="Delete" @Select="Select" :isOption="true"
+                    :kind="3"
                     :id="item.id" 
                     :sub_code="item.sub_code" 
                     :bom="item.bom" 
@@ -39,11 +40,12 @@
             </div>
         </div>
 
-        <fileUploader class="file-uploader" :projectID=projectID />   
+        <fileUploader class="file-uploader" :projectID="projectID" />   
             
         <modal v-if="showModal" :data="modalData" @Create="Create" @Update="Update" @HideModal="HideModal"
         :kind="3"
         :mode="modalData.mode"
+        :id="modalData.id"
         :sub_code="modalData.sub_code"
         :bom="modalData.bom"
         :demand_cap="modalData.demand_cap"
@@ -64,10 +66,13 @@ import fileUploader from "./FileUploader.vue"
 
 export default {
     props:{
-        projectID: Number,
+        projectID: {
+            type: Number,
+            default: null
+        },
         recipeID: {
             type:Number,
-            default: 3
+            default: null
         }
     },
     data(){
@@ -262,7 +267,7 @@ export default {
     }
 
     #sub-code{
-        max-width: 100px;
+        max-width: 200px;
         border-right: 0.1px solid rgb(199, 199, 199);
     }
 

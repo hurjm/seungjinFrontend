@@ -1,6 +1,9 @@
 <template>
     <div>
         <div class="list">
+            <div class="create-btn" @click="CreateBtn">
+                +New Customer
+            </div>
             <draggable class="drag-area" v-model="customers" group="customers" @start="drag=true" @end="drag=false">
                 <list-element class="list-element" v-for="item in customers" :key="item.id" 
                 @ShowModal="ShowModal" @Delete="Delete" @Select="Select" 
@@ -10,7 +13,6 @@
                 :title="item.title"
                 :photo="item.photo"/>
             </draggable>
-            <div class="create-btn" @click="CreateBtn"/>
         </div>
         
         <modal v-if="showModal" :width="250" :height="125" @Create="Create" @Update="Update" @HideModal="HideModal"
@@ -67,11 +69,10 @@ export default {
                     console.log(err);
                 })
             }
-            
         },
         Select(data){
             console.log("cusView " + data.id);
-            this.$emit('SelectCustomer', data.id);
+            this.$emit('SelectCustomer', {id: data.id, title: data.title});
         },
         Create(data){   
             this.HideModal();         
@@ -294,12 +295,12 @@ export default {
 
 <style lang="scss" scoped>
     .create-btn{
-        background-color: #5f5ab9;
+        background-color: #4f5467;
         border-radius: 10px;
         box-shadow: 2px 2px 5px rgb(187, 187, 187);
-        min-width: 250px;
-        min-height: 250px;
-        margin: 10px;
+        width: fit-content;
+        height: fit-content;
+        margin-bottom: 10px;
         padding: 10px;
         box-sizing: border-box;
         color: #ffffff;
@@ -310,6 +311,7 @@ export default {
     }
 
     .create-btn:hover{
+        background-color: #333642;
         box-shadow: 2px 2px 10px rgb(187, 187, 187);
     }
 

@@ -16,6 +16,7 @@
                 <draggable class="drag-area" v-model="projects" group="projects" @start="drag=true" @end="drag=false">
                     <table-element class="table-element" v-for="item in projects" :key="item.id" 
                     @ShowModal="ShowModal" @Delete="Delete" @Select="Select" :isOption="true"
+                    :kind="2"
                     :id="item.id" 
                     :title="item.title" 
                     :startDate="item.start_date" 
@@ -43,7 +44,10 @@ import draggable from 'vuedraggable';
 
 export default {
     props:{
-        customerID: Number
+        customerID: {
+            tyep: Number,
+            default: null
+        }
     },
     data(){
         return{
@@ -56,7 +60,8 @@ export default {
         }
     },
     mounted(){
-        this.GetList()
+        this.GetList();
+        this.SendSideBarData();
     },
     watch: {
         projects:function(){
@@ -85,8 +90,8 @@ export default {
             }
             
         },
-        Select(id){
-            this.$emit('SelectProject', id)
+        Select(data){
+            this.$emit('SelectProject', data);
         },
         Create(data){
             this.HideModal();
@@ -150,7 +155,7 @@ export default {
                 console.log(err);
             })
         },
-        GetList(event, data){
+        GetList(){
             console.log("getprojects");
             axios.post('http://localhost:80/getprojects', {customer_id: this.customerID})
             .then((res) => {
@@ -174,6 +179,11 @@ export default {
         CreateBtn(){
             console.log("createbtn");
             this.ShowModal({title: "", mode: 'create'});
+        },
+        SendSideBarData(){
+            console.log('SendSideBarData')
+            console.log(this.projects)
+            this.$emit('SendSideBarData', {index: 1, list: this.projects});
         }
     },
     components:{

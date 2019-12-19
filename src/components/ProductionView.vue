@@ -1,6 +1,6 @@
 <template>
     <div class="main-container">
-        <imageUploader class="timeline" :projectID=projectID></imageUploader>
+        <imageUploader class="timeline" :kind="1" :projectID=projectID></imageUploader>
 
         <div class="element-container">
             <div class="create-btn" @click="CreateBtn">New Code</div>
@@ -51,7 +51,10 @@ import draggable from 'vuedraggable';
 
 export default {
     props:{
-        projectID: Number
+        projectID: {
+            type: Number,
+            default: null
+        }
     },
     data(){
         return{

@@ -2,8 +2,7 @@
 <div class="element" @click="Select">
     <div class="option-container-container">
         <div class="option-container">
-            <div class="option-btn" v-if="isOption" @click="Option">
-            </div>
+            <img class="option-btn" src="../assets/images/table_option_btn.png" v-if="isOption" @click="Option"/>
             <div class="dropdown-container" v-show="dropdown">
                 <div class="dropdown-content">
                     <div class="dropdown-btn" @click="Update">수정</div>
@@ -13,33 +12,37 @@
         </div>
     </div>
 
-    <div class="table-property" id="title" v-if="title!=null">
-        {{title}}
-    </div>
-    <div class="table-property" id="start-date" v-if="startDate!=null">
-        {{startDate}}
-    </div>
-    <div class="table-property" id="launching-date" v-if="launchingDate!=null">
-        {{launchingDate}}
+    <div class="table-property-container" v-if="kind==2">
+        <div class="table-property" id="title">
+            {{title}}
+        </div>
+        <div class="table-property" id="start-date">
+            {{startDate}}
+        </div>
+        <div class="table-property" id="launching-date">
+            {{launchingDate}}
+        </div>
     </div>
 
-    <div class="table-property" id="sub-code" v-if="sub_code!=null">
-        {{sub_code}}
-    </div>
-    <div class="table-property" id="bom" v-if="bom!=null">
-        {{bom}}
-    </div>
-    <div class="table-property" id="demand-cap" v-if="demand_cap!=null">
-        {{demand_cap}}
-    </div>
-    <div class="table-property" id="indication-cap" v-if="indication_cap!=null">
-        {{indication_cap}}
-    </div>
-    <div class="table-property" id="real-cap" v-if="real_cap!=null">
-        {{real_cap}}
-    </div>
-    <div class="table-property" id="subconstractor" v-if="subconstractor!=null">
-        {{subconstractor}}
+    <div class="table-property-container" v-if="kind==3">
+        <div class="table-property" id="sub-code">
+            {{sub_code}}
+        </div>
+        <div class="table-property" id="bom">
+            {{bom}}
+        </div>
+        <div class="table-property" id="demand-cap">
+            {{demand_cap}}
+        </div>
+        <div class="table-property" id="indication-cap">
+            {{indication_cap}}
+        </div>
+        <div class="table-property" id="real-cap">
+            {{real_cap}}
+        </div>
+        <div class="table-property" id="subconstractor">
+            {{subconstractor}}
+        </div>
     </div>
 </div>
 </template>
@@ -47,6 +50,10 @@
 <script>
 export default {
     props:{
+        kind:{
+            type: Number,
+            default: null
+        },
         id: {
             type: Number,
             default: null
@@ -57,39 +64,39 @@ export default {
         },
         title: {
             type: String,
-            default: null
+            default: ""
         },
         startDate: {
             type: String,
-            default: null
+            default: ""
         },
         launchingDate: {
             type: String,
-            default: null
+            default: ""
         },
         sub_code: {
             type: String,
-            default: null
+            default: ""
         },
         bom: {
             type: String,
-            default: null
+            default: ""
         },
         demand_cap: {
             type: String,
-            default: null
+            default: ""
         },
         indication_cap: {
             type: String,
-            default: null
+            default: ""
         },
         real_cap: {
             type: String,
-            default: null
+            default: ""
         },
         subconstractor: {
             type: String,
-            default: null
+            default: ""
         }
     },
     data(){
@@ -107,7 +114,25 @@ export default {
             let startDateConverted =  new Date(this.startDate.replace("년 ", "-").replace("월 ", "-").replace("일", ""));
             let launchingDateConverted =  new Date(this.launchingDate.replace("년 ", "-").replace("월 ", "-").replace("일", ""));
             console.log(startDateConverted)
-            this.$emit("ShowModal", {id: this.id, title: this.title, startDate: startDateConverted, launchingDate: launchingDateConverted, mode: "update"});
+            if(this.kind == 2){
+                this.$emit("ShowModal", {
+                    id: this.id, 
+                    title: this.title, 
+                    startDate: startDateConverted, 
+                    launchingDate: launchingDateConverted, 
+                    mode: "update"});
+            }
+            else if(this.kind == 3){
+                this.$emit("ShowModal", {
+                    id: this.id, 
+                    sub_code: this.sub_code, 
+                    bom: this.bom, 
+                    demand_cap: this.demand_cap, 
+                    indication_cap: this.indication_cap, 
+                    real_cap: this.real_cap, 
+                    subconstractor: this.subconstractor, 
+                    mode: "update"});
+            }
             this.ChangeDropDown();
             console.log("Update");
         },
@@ -121,7 +146,7 @@ export default {
         },
         Select(){
             if(!this.dropdown){
-                this.$emit('Select', this.id)
+                this.$emit('Select', {id: this.id, title: this.title})
             }
             console.log("Select " + this.id)
         },
@@ -152,26 +177,20 @@ export default {
         border-bottom: 0.1px solid rgb(199, 199, 199);
         border-right: 0.1px solid rgb(199, 199, 199);
         border-left: 0.1px solid rgb(199, 199, 199);
-        // display: flex;
-        // justify-content: space-between;
-        // // width: 80%;
-        // min-width: 125px;
-        // min-height: 125px;
-        // height: fit-content;
-        // box-sizing: border-box;
-        // // margin-right: 10px;
-        // // margin-left: 10px;
-        // margin: 10px;
-        // background-color: #ffffff;
-        // border-radius: 10px;
-        // box-shadow: 2px 2px 5px rgb(187, 187, 187);
-        // padding: 10px;
-        // margin: 5px;
         cursor: pointer;
     }
 
     .element:hover{
         box-shadow: 2px 2px 10px rgb(187, 187, 187);
+    }
+
+    .table-property-container{
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
     }
 
     .content-container{
@@ -191,13 +210,10 @@ export default {
         align-items: flex-end;
         align-items: flex-end;
         position: absolute;
-        // position: absolute;
-        // left:250px;
 
         .option-btn{
-            background-image: url(../assets/images/option_btn.png);
             width: 20px;
-            height: 20px;
+            height: 26px;
             cursor: pointer;
         }
 
@@ -252,7 +268,7 @@ export default {
     }
     
     #sub-code{
-        max-width: 100px;
+        max-width: 200px;
     }
     #bom{
         

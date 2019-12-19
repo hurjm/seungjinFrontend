@@ -279,66 +279,26 @@ export default {
                 border: 1px solid rgb(0, 0, 0);
             }
 
-            .title:focus{
-                border: 1px solid rgb(189, 19, 19);
-                outline: none;
+            // .title:focus{
+            //     border-color:rgb(175, 231, 235);
+            //     outline: none;
+            // }
+        }
+
+        &-submaterials{
+            height: 200px;
+            width: 200px;
+
+            input{
+                padding: 5px;
+                border: 1px solid rgb(0, 0, 0);
             }
+
+            // input:focus{
+            //     border-color:rgb(175, 231, 235);
+            // }
         }
     }
-
-    // .modal-container-customers{
-    //     background-color: #fff;
-    //     display: flex;
-    //     width: fit-content;
-    //     height: fit-content;
-    //     flex-direction: column;
-    //     justify-content: space-between;
-    //     padding: 10px;
-    //     border-radius: 5px;
-    //     box-shadow: 2px 2px 5px rgb(187, 187, 187);
-    // }
-
-    // .modal-container-projects{
-    //     background-color: #fff;
-    //     display: flex;
-    //     width: fit-content;
-    //     height: fit-content;
-    //     flex-direction: column;
-    //     justify-content: space-between;
-    //     padding: 10px;
-    //     border-radius: 5px;
-    //     box-shadow: 2px 2px 5px rgb(187, 187, 187);
-    // }
-
-    // .modal-container-recipes{
-    //     background-color: #fff;
-    //     display: flex;
-    //     width: fit-content;
-    //     height: fit-content;
-    //     flex-direction: column;
-    //     padding: 10px;
-    //     border-radius: 5px;
-    //     box-shadow: 2px 2px 5px rgb(187, 187, 187);
-    // }
-
-    // .modal-container-recipes{
-    //     background-color: #fff;
-    //     display: flex;
-    //     width: fit-content;
-    //     height: fit-content;
-    //     flex-direction: column;
-    //     padding: 10px;
-    //     border-radius: 5px;
-    //     box-shadow: 2px 2px 5px rgb(187, 187, 187);
-    // }
-
-    // .title{
-    //     height: 30px;
-    //     width: 99%;
-    //     padding-left: 5px;
-    //     border-radius: 5px;
-    //     border: 1px solid rgb(0, 0, 0);
-    // }
 
     .note {
         min-height: 30px;
@@ -353,8 +313,10 @@ export default {
     }
 
     .subMaterials{
+        height: 100%;
         display: flex;
         flex-direction: column;
+        justify-content: space-around;
     }
 
     .button-container{
