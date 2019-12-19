@@ -56,7 +56,7 @@ export default {
                 var filename = e.target.id;
                 console.log(filename);
                  await axios({
-                    url: 'http://localhost:80/downloadsubmatfile', 
+                    url: '/downloadsubmatfile', 
                     method: 'post',
                     data: {
                         name: filename
@@ -85,7 +85,7 @@ export default {
                 console.log(e.target.id);
                 console.log(e.target);
                 const filename = e.target.id;
-                await axios.post('http://localhost:80/deletesubmatfile', {name: filename})
+                await axios.post('/deletesubmatfile', {name: filename})
                 .then(res => {
                     if(res.data.result == 'success'){
                         console.log('success');
@@ -101,7 +101,7 @@ export default {
             }
         },
         GetFiles(){
-            axios.post('http://localhost:80/getsubmatfiles', {projectid: this.projectID})
+            axios.post('/getsubmatfiles', {projectid: this.projectID})
             .then(res => {
                 let pointIndex;
                 let barIndex;
@@ -145,7 +145,7 @@ export default {
             const formData = new FormData();
             formData.append('file', file);
 
-            await axios.post('http://localhost:80/uploadsubmatfile', formData)
+            await axios.post('/uploadsubmatfile', formData)
             .then(res => {
                 console.log(res);
             }).catch(err => {

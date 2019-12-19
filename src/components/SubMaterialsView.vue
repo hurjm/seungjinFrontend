@@ -107,7 +107,7 @@ export default {
             });
 
             if(updateList.length > 0){
-                axios.post('http://localhost:80/updatesubmaterialorder', {data: updateList})
+                axios.post('/updatesubmaterialorder', {data: updateList})
                 .then(res => {
                     console.log(res);
                 }).catch(err => {
@@ -129,7 +129,7 @@ export default {
                 real_cap: data.real_cap, 
                 subconstractor: data.subconstractor
                 }
-            axios.post('http://localhost:80/createsubmaterial', temp)
+            axios.post('/createsubmaterial', temp)
             .then((res) => {
                 console.log(res);
                 if(res.data.result == 'success'){
@@ -145,7 +145,7 @@ export default {
             this.HideModal()
             console.log("submaterials_modal_update");
             console.log(data);
-            axios.post('http://localhost:80/updatesubmaterial', data)
+            axios.post('/updatesubmaterial', data)
             .then((res) => {
                 console.log(res);
                 if(res.data.result == "success"){
@@ -167,7 +167,7 @@ export default {
         },
         Delete(id){
             console.log("delete");
-            axios.post('http://localhost:80/deletesubmaterial', {id : id})
+            axios.post('/deletesubmaterial', {id : id})
             .then((res) => {
                 console.log(res);
                 if(res.data.result == "success"){
@@ -183,7 +183,7 @@ export default {
             })
         },
         GetList(){
-            axios.post('http://localhost:80/getsubmaterials', {id : this.recipeID})
+            axios.post('/getsubmaterials', {id : this.recipeID})
             .then((res) => {
                 console.log(res)
                 for(var i=0; i<res.data.data.length; i++){

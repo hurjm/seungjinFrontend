@@ -57,7 +57,7 @@ export default {
             console.log("getcustomerphoto");
         }
         else if(this.kind == 1){
-            axios.post('http://localhost:80/getimage', {id: this.projectID, type: 1})
+            axios.post('/getimage', {id: this.projectID, type: 1})
             .then(res => {
                 this.images.push(res.data.data);
             }).catch(err => {
@@ -159,14 +159,14 @@ export default {
 
             if(this.customerID != null){
                 try{
-                    await axios.post('http://localhost:80/uploadcustomerphoto', formData);
+                    await axios.post('/uploadcustomerphoto', formData);
                 } catch(err){
                     console.log(err);
                 }
             }
             else if(this.projectID != null){
                 try{
-                    await axios.post('http://localhost:80/uploadtimeline', formData);
+                    await axios.post('/uploadtimeline', formData);
                 } catch(err){
                     console.log(err);
                 }
@@ -179,7 +179,7 @@ export default {
             // //     formData.append('images[]', file, file.name);
             // // })
 
-            // axios.post('http://localhost:80/uploadtimeline', formData)
+            // axios.post('/uploadtimeline', formData)
             // .then(res =>{
             //     this.$toastr.s('All images uploaded successfully!');
             //     this.images = [];
@@ -229,7 +229,7 @@ export default {
             padding:10px;
             border-radius:4px;
             margin-top:7px;
-            cursor:posinter;
+            cursor:pointer;
         }
 
         input{

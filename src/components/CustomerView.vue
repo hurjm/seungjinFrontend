@@ -62,7 +62,7 @@ export default {
             });
 
             if(updateList.length > 0){
-                axios.post('http://localhost:80/updatecustomersorder', updateList)
+                axios.post('/updatecustomersorder', updateList)
                 .then((res) =>{
                     console.log(res);
                 }).catch((err) => {
@@ -85,7 +85,7 @@ export default {
                 title: data.title
             }
 
-            axios.post('http://localhost:80/createcustomer', temp)
+            axios.post('/createcustomer', temp)
             .then(res => {
                 console.log("add " + res.data.data);
                 temp.id = res.data.data;
@@ -106,23 +106,6 @@ export default {
                     .catch(err=>{
                         console.log(err);
                     })
-                    
-                    // const formData = new FormData();
-                    // formData.append('file', data.photo);
-
-                    // axios.post('http://localhost:80/uploadcustomerphoto', formData)
-                    // .then(res => {
-                    //     console.log(res);
-                    //     const reader = new FileReader();
-                    //     reader.onload = (e) => {
-                    //         temp.photo = e.target.result;
-                    //         this.customers.push(temp);
-                    //         };
-                    //     reader.readAsDataURL(data.photo);
-                    // })
-                    // .catch(err => {
-                    //     console.log(err);
-                    // })
                 }
                 else{
                     this.customers.push(temp)
@@ -136,7 +119,7 @@ export default {
             this.HideModal();
             console.log("update");
             console.log(data);
-            axios.post('http://localhost:80/updatecustomer', data)
+            axios.post('/updatecustomer', data)
             .then(res => {
                 console.log(res);
                 if(res.data.result == "success"){
@@ -192,7 +175,7 @@ export default {
         },
         Delete(id){
             console.log("del " + id);
-            axios.post('http://localhost:80/deletecustomer', {id : id})
+            axios.post('/deletecustomer', {id : id})
             .then(res => {
                 console.log("res");
                 console.log(res);
@@ -213,15 +196,12 @@ export default {
         },
         GetList(){
             let temp_list = [];
-            axios.get('http://localhost:80/getcustomers')
+            axios.get('/getcustomers')
             .then(res => {
                 console.log(res);
                 temp_list = res.data.data;
-                // for(var i=0; i<res.data.data.length; i++){
-                //     this.customers.push(res.data.data[i])
-                // }
                 console.log('images');
-                axios.post('http://localhost:80/getimage', {type: 0})
+                axios.post('/getimage', {type: 0})
                 .then(res => {
                     console.log(res);
                     temp_list.forEach(item => {
@@ -274,7 +254,7 @@ export default {
             console.log("formData");
             console.log(formData);
 
-            return axios.post('http://localhost:80/uploadcustomerphoto', formData)
+            return axios.post('/uploadcustomerphoto', formData)
             .then(res => {
                 console.log("res");
                 console.log(res);

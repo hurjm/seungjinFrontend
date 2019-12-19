@@ -146,11 +146,15 @@ export default {
     }
 
     .item-name{
-        padding: 5px 20px;
+        padding-top: 5px;
+        padding-bottom: 3px;
+        padding-left: 20px;
         transition: background-color 0.1s linear;
 
         &-not{
-            padding: 5px 20px;
+            padding-top: 5px;
+            padding-bottom: 3px;
+            padding-left: 20px;
             cursor: default;
         }
     }

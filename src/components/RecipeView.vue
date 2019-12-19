@@ -129,7 +129,7 @@ export default {
             });
 
             if(updateList.length > 0){
-                axios.post('http://localhost:80/updaterecipestate', {state: state, data: updateList})
+                axios.post('/updaterecipestate', {state: state, data: updateList})
                 .then(res => {
                     console.log(res);
                 }).catch(err => {
@@ -159,7 +159,7 @@ export default {
                 state: data.state,
                 }
                 console.log("create");
-            axios.post('http://localhost:80/createrecipe', temp)
+            axios.post('/createrecipe', temp)
             .then((res) => {
                 console.log(res);
                 if(res.data.result == 'success'){
@@ -183,7 +183,7 @@ export default {
             console.log('updaterecipe');
             console.log(this.suggested);
             console.log(data);
-            axios.post('http://localhost:80/updaterecipe', data)
+            axios.post('/updaterecipe', data)
             .then((res) => {
                 console.log(res);
                 if(res.data.result == "success"){
@@ -216,7 +216,7 @@ export default {
         Delete(id){
             this.HideModal();
             console.log("delete");
-            axios.post('http://localhost:80/deleterecipe', {id : id})
+            axios.post('/deleterecipe', {id : id})
             .then((res) => {
                 console.log(res);
                 if(res.data.result == "success"){
@@ -244,7 +244,7 @@ export default {
             })
         },
         GetRecipes(){
-            axios.post('http://localhost:80/getrecipes', {id : this.projectID})
+            axios.post('/getrecipes', {id : this.projectID})
             .then((res) => {
                 console.log(res)
                 for(var i=0; i<res.data.data.length; i++){

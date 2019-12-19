@@ -81,7 +81,7 @@ export default {
             });
 
             if(updateList.length > 0){
-                axios.post('http://localhost:80/updateprojectsorder', updateList)
+                axios.post('/updateprojectsorder', updateList)
                 .then((res) =>{
                     console.log(res);
                 }).catch((err) => {
@@ -105,7 +105,7 @@ export default {
                 launching_date: data.launchingDate,
                 list_order: this.projects.length
                 }
-            axios.post('http://localhost:80/createproject', temp)
+            axios.post('/createproject', temp)
             .then((res) =>{
                 temp.id = res.data.data;
                 this.projects.push(temp)
@@ -119,7 +119,7 @@ export default {
             this.HideModal();
             console.log('UpdateProject')
             console.log(data);
-            axios.post('http://localhost:80/updateproject', data)
+            axios.post('/updateproject', data)
             .then((res) => {
                 console.log(res);
                 if(res.data.result == "success"){
@@ -140,7 +140,7 @@ export default {
             })
         },
         Delete(id){
-            axios.post('http://localhost:80/deleteproject', {id : id})
+            axios.post('/deleteproject', {id : id})
             .then((res) => {
                 console.log(res);
                 if(res.data.result == "success"){
@@ -157,7 +157,7 @@ export default {
         },
         GetList(){
             console.log("getprojects");
-            axios.post('http://localhost:80/getprojects', {customer_id: this.customerID})
+            axios.post('/getprojects', {customer_id: this.customerID})
             .then((res) => {
                 console.log(res);
                 for(var i=0; i<res.data.data.length; i++){

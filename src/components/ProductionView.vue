@@ -86,7 +86,7 @@ export default {
             });
 
             if(updateList.length > 0){
-                axios.post('http://localhost:80/updateproductioncodestate', {data: updateList})
+                axios.post('/updateproductioncodestate', {data: updateList})
                 .then(res => {
                     console.log(res);
                 }).catch(err => {
@@ -95,7 +95,7 @@ export default {
             }
         },
         GetList(){
-            axios.post('http://localhost:80/getproductions', {projectID : this.projectID, state: 2})
+            axios.post('/getproductions', {projectID : this.projectID, state: 2})
             .then((res) => {
                 console.log("res")
                 console.log(typeof(this.recipeFin));
@@ -121,7 +121,7 @@ export default {
                 startdate: Date.now(),
                 enddate: null
                 }
-            axios.post('http://localhost:80/createproductioncode', temp)
+            axios.post('/createproductioncode', temp)
             .then((res) => {
                 console.log(res);
                 if(res.data.result == 'success'){
@@ -143,7 +143,7 @@ export default {
                 title: data.title, 
                 note: data.note
                 }
-            axios.post('http://localhost:80/updateproductioncode', data)
+            axios.post('/updateproductioncode', data)
             .then((res) => {
                 console.log(res);
                 if(res.data.result == "success"){
@@ -164,7 +164,7 @@ export default {
         },
         Delete(id){
             console.log("delete");
-            axios.post('http://localhost:80/deleteproductioncode', {id : id})
+            axios.post('/deleteproductioncode', {id : id})
             .then((res) => {
                 console.log(res);
                 if(res.data.result == "success"){
